@@ -14,6 +14,22 @@ You can run your application in dev mode that enables live coding using:
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
 
+### Injecting configurations
+
+```shell script
+mvn quarkus:dev "-Dbooks.author='MeloInjected'"
+```
+or for tests
+
+```shell script
+mvn test "-Dbooks.author=MeloInjected"
+```
+### custom profile
+
+```shell script
+mvn quarkus:dev "-Dquarkus.profile=staging"
+```
+
 ## Packaging and running the application
 
 The application can be packaged using:
