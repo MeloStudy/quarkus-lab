@@ -67,6 +67,11 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 
 You can then execute your native executable with: `./target/rest-book-1.0.0-SNAPSHOT-runner`
 
+Yo can test the executable native with
+```shell script
+./mvnw verify -Pnative
+```
+
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
 ## Related Guides
