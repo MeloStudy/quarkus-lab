@@ -74,6 +74,42 @@ Yo can test the executable native with
 
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
+## Dockerize
+add extension
+```shell script
+mvn quarkus:add-extension "-Dextensions=container-image-docker"
+```
+
+generate image per default
+```shell script
+mvn package "-Dquarkus.container-image.build=true"
+```
+
+generate a legacy jar
+```shell script
+mvn package "-Dquarkus.container-image.build=true" "-Dquarkus.package.jar.type=legacy-jar"
+```
+
+can define a custom tag
+```shell script
+mvn package "-Dquarkus.container-image.build=true" "-Dquarkus.container-image.tag=jvm"
+```
+
+run in a container
+```shell script
+docker run -i --rm -p 8080:8080 <user>/01-rest-book:jvm
+```
+
+### Dockerize with Linux Native Executable
+```shell script
+mvn package "-Dquarkus.native.container-build=true" "-Dquarkus.container-image.build=true" "-Dquarkus.package.type=native" "-Dquarkus.container-image.tag=native"
+```
+
+run in a container
+```shell script
+docker run -i --rm -p 8080:8080 <user>/01-rest-book:native
+```
+
 ## Related Guides
 
 - RESTEasy Classic JSON-B ([guide](https://quarkus.io/guides/rest-json)): JSON-B serialization support for RESTEasy Classic
