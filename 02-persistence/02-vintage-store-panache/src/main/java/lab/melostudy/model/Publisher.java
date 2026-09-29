@@ -1,4 +1,4 @@
-package lab.melostudy;
+package lab.melostudy.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
