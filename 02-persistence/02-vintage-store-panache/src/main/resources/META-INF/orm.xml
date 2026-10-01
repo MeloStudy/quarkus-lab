@@ -9,6 +9,12 @@
             <id name="id">
                 <generated-value strategy="AUTO"/>
             </id>
+            <basic name="name">
+                <column length="100" nullable="false"/>
+            </basic>
+            <basic name="createdDate">
+                <column name="created_date" nullable="false"/>
+            </basic>
         </attributes>
     </entity>
 </entity-mappings>
