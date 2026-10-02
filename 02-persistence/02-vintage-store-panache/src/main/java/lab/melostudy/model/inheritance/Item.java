@@ -5,7 +5,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lab.melostudy.Artist;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -25,4 +28,8 @@ public class Item extends PanacheEntity {
 
     @Column(name = "created_date", nullable = false)
     public Instant createdDate = Instant.now();
+
+    @ManyToOne
+    @JoinColumn(name = "artist_fk") // redefine column name
+    public Artist artist;
 }
