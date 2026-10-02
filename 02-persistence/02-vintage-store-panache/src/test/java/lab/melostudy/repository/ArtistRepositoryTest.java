@@ -18,15 +18,13 @@ class ArtistRepositoryTest {
     @Test
     @TestTransaction
     void shouldCreateAndFindAnArtist() {
+        // basic panache queries
         long count = repository.count();
         int listAll = repository.listAll().size();
         assertEquals(count, listAll);
 
         // Creates an Artist
-        Artist artist = new Artist();
-        artist.setName("name");
-
-        // Persists the Artist
+        Artist artist = new Artist("name");
         repository.persist(artist);
         assertNotNull(artist.getId());
 
