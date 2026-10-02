@@ -1,5 +1,4 @@
-set
-client_min_messages = WARNING;
+set client_min_messages = WARNING;
 alter table if exists t_items drop constraint if exists FKr3152tukbog585dik5qwonldg;
 alter table if exists t_items drop constraint if exists FKi6lqpcqfnc4dtsp9w473p5kkj;
 alter table if exists t_purchase_order_lines drop constraint if exists FKf51l5n972qc282ubbv97c1kfa;

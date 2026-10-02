@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.wildfly.common.Assert.assertNotNull;
+import static org.wildfly.common.Assert.assertTrue;
 
 @QuarkusTest
 class CustomerRepositoryTest {
@@ -19,6 +20,8 @@ class CustomerRepositoryTest {
     @Test
     @TestTransaction
     void shouldCreateAndFindACustomer() {
+        assertTrue(repository.listAllDans().size() <= repository.count());
+
         Customer customer = new Customer("full name", "email");
 
         repository.persist(customer);

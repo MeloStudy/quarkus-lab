@@ -6,7 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
+// Active Record pattern
 @Entity
 @Table(name = "t_publishers")
 public class Publisher extends PanacheEntity {
@@ -18,6 +21,14 @@ public class Publisher extends PanacheEntity {
 
     public Publisher(String name) {
         this.name = name;
+    }
+
+    public static Optional<Publisher> findByName(String name) {
+        return Publisher.find("name", name).firstResultOptional();
+    }
+
+    public static List<Publisher> findContainingName(String name) {
+        return Publisher.list("name like ?1", "%" + name + "%");
     }
 }
 
