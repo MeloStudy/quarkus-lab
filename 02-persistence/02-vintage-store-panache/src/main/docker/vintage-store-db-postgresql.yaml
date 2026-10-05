@@ -1,7 +1,7 @@
 version: "3"
 services:
   vintagestore_database:
-    image: "postgres:13.3"
+    image: "postgres:17.11"
     container_name: "vintagestore_database"
     ports:
       - "5432:5432"

@@ -11,6 +11,6 @@ import java.util.List;
 public class CustomerRepository implements PanacheRepository<Customer> {
 
     public List<Customer> listAllDans() {
-        return list("firstName = 'Dan'", Sort.by("lastName"));
+        return list("fullName = 'Dan'", Sort.by("fullName"));
     }
 }
