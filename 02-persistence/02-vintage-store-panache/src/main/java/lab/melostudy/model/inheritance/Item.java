@@ -1,6 +1,7 @@
 package lab.melostudy.model.inheritance;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
@@ -29,7 +30,7 @@ public class Item extends PanacheEntity {
     @Column(name = "created_date", nullable = false)
     public Instant createdDate = Instant.now();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "artist_fk") // redefine column name
     public Artist artist;
 }

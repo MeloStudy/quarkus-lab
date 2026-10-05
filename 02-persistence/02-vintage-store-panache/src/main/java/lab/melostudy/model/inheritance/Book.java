@@ -1,5 +1,6 @@
 package lab.melostudy.model.inheritance;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -25,7 +26,7 @@ public class Book extends Item {
     @Enumerated(EnumType.STRING)
     public Language language;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "publisher_fk") // redefine column name
     public Publisher publisher;
 }

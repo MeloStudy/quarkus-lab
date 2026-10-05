@@ -1,6 +1,7 @@
 package lab.melostudy.model.cardinality;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -23,10 +24,12 @@ public class PurchaseOrder extends PanacheEntity {
 
     // to avoid override column definition
     // and not force to use join table t_purchase_orders_t_purchase_order_lines
-    @OneToMany(mappedBy = "purchaseOrder")
+    @OneToMany(mappedBy = "purchaseOrder", cascade = {
+            CascadeType.REMOVE, CascadeType.PERSIST
+    }, orphanRemoval = true)
     public List<OrderLine> orderLines = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer_fk") // redefine column name
     public Customer customer;
 
@@ -36,5 +39,10 @@ public class PurchaseOrder extends PanacheEntity {
     public void addOrderLine(OrderLine orderLine) {
         orderLines.add(orderLine);
         orderLine.purchaseOrder = this;
+    }
+
+    public void removeOrderLine(OrderLine orderLine) {
+        orderLines.remove(orderLine);
+        orderLine.purchaseOrder = null;
     }
 }

@@ -1,8 +1,10 @@
 package lab.melostudy.model.cardinality;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -21,8 +23,9 @@ public class Track extends PanacheEntity {
     @Column(nullable = false)
     public Duration duration;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cd_fk") // redefine column name
+    @JsonbTransient
     public CD cd;
 
     @Column(name = "created_date", nullable = false)
