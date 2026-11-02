@@ -44,7 +44,7 @@
 | [09](lab-09-relationships/README.md) | Relationships and inheritance | `@ManyToMany` and `@OneToMany`/`@ManyToOne` (owning vs inverse side), `SINGLE_TABLE` inheritance, `LazyInitializationException`, N+1, cascade vs bulk delete | Owns mapping | Lab 08 | 🟨 |
 | [10](lab-10-queries-transactions/README.md) | Queries and transactions | Safe dynamic queries (named parameters, `locate` vs `LIKE`), aggregates with `select new`, rollback rules (checked exceptions), `REQUIRES_NEW`, lost updates and pessimistic locking | Owns queries and transactions | Lab 09 | 🟨 |
 | [11](lab-11-migrations/README.md) | Migrations | Flyway: versioned and repeatable migrations, `validate`, a V1 generated from the entities, SQL-level constraints Hibernate cannot declare (`lower(name)` index, `CHECK`s), a migration that rewrites existing data (tested against legacy rows), jar on a real PostgreSQL, checksum mismatch, baseline of an existing database | Owns the schema in production | Lab 10 solution (already slim) | 🟨 |
-| 12 | DTOs and MapStruct | Separating entity and DTO, mapping with MapStruct (`componentModel = cdi`), mapping inside the transaction | Builds on 09 (lazy loading) | Lab 11 solution | ⬜ |
+| [12](lab-12-dtos-mapstruct/README.md) | DTOs and MapStruct | Separating entity and API model (an internal `cost_price` column that must not leak), records as DTOs, MapStruct as a CDI bean (`unmappedTargetPolicy = ERROR`, `@SubclassMapping` for the review hierarchy, `@MappingTarget`), where to map relative to the transaction | Builds on 09 (lazy loading). MapStruct is outside the Quarkus BOM (justified in the README) | Lab 11 solution | 🟨 |
 | 13 | Cache and scheduled tasks | `quarkus-cache` (keys, invalidation, the stale data trap), `@Scheduled` (concurrent execution, cluster caveat) | Owns cache and scheduling | Minimal app with one slow lookup | ⬜ |
 
 ## Block 4 - REST for production
@@ -102,7 +102,7 @@
 | **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist | Uses everything | Empty project | ⬜ |
 
 ## Notes for the next labs
-- **Lab 12 (DTOs, MapStruct):** start from the lab 11 solution. The schema is now owned by Flyway in every profile (`validate`; migrations in `db/migration`, dev sample data in `db/dev`), so any entity change needs a migration (a new `V4`). `TestData` still truncates by table name. Categories are stored normalized (lower case, trimmed) and the database checks it. Remember the `Product` entity is still the API representation; lab 12 separates them.
+- **Lab 13 (cache and scheduled tasks):** starts from a minimal app (no database needed). Entities are now separate from the API (lab 12: DTOs + MapStruct, which is not in the Quarkus BOM and needs the `annotationProcessorPaths` entry in `maven-compiler-plugin`); keep that in mind if a later lab continues the catalog domain. Schema changes always go through a Flyway migration (lab 11).
 - **Projects (P1, P2, P3):** the first one needs a written specification and an acceptance test suite that is visible but has no hints. Decide the domain when the block before it is finished.
 - **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
