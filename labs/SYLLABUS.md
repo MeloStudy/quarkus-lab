@@ -8,6 +8,7 @@
 - **Type B (guide):** operational or exploratory topics (containers, native, Kubernetes, observability). A single project and a step-by-step guide with commands and "what you should see"; no separate solution.
 
 **First batch (labs 01-05):** 01 project and dev mode · 02 configuration · 03 CDI · 04 Quarkus REST · 05 validation and errors.
+**Second batch (labs 06-10):** 06 OpenAPI · 07 REST Client · 08 Panache · 09 relationships and inheritance · 10 queries and transactions. The learner reviews and gives feedback on both batches together.
 
 **Status:** ⬜ pending · 🟨 built, waiting for the learner · ✅ done
 
@@ -25,7 +26,7 @@
 |-----|-------|-------------------|--------|
 | [04](lab-04-quarkus-rest/README.md) | Quarkus REST | Resources, JSON, status codes, `Location`, parameters, paging, response filters, resource lifecycle | 🟨 |
 | [05](lab-05-validation-errors/README.md) | Validation and errors | Hibernate Validator, custom constraints, `@ServerExceptionMapper`, one error contract, catch-all without leaks | 🟨 |
-| 06 | OpenAPI | Documenting the API, Swagger UI | ⬜ |
+| [06](lab-06-openapi/README.md) | OpenAPI | Generated document, annotations, reusable error responses, `OASFilter`, Swagger UI vs production | 🟨 |
 | 07 | REST Client | Consuming another API with `@RegisterRestClient` | ⬜ |
 
 ## Block 3 - Persistence
