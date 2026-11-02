@@ -56,7 +56,7 @@
 ## Block 5 - Testing
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
-| 16 | `@QuarkusTest` | RestAssured, `@InjectMock`, `@TestTransaction`, test lifecycle and speed | Owns mocking | Minimal app | ⬜ |
+| [16](lab-16-quarkus-test/README.md) | `@QuarkusTest` | `@InjectMock` (and its normal-scope rule), `QuarkusMock.installMockForType` with a fixed `Clock`, shared state that outlives a test, `@TestTransaction` and why HTTP cannot see its rows, a plain Mockito unit test next to the slow ones, what a `@TestProfile` costs. The learner completes the arrangement of finished test classes | Owns mocking | Minimal app (Dev Services for the database) | 🟨 |
 | 17 | Dev Services and test profiles | Containers in tests, `QuarkusTestProfile`, `QuarkusTestResourceLifecycleManager`, reuse | Owns test profiles (Dev Services intro was lab 08) | Minimal app with a database | ⬜ |
 | 18 | Integration tests between services | `@QuarkusIntegrationTest`, WireMock, contracts between services | Owns WireMock and contracts | Two minimal services | ⬜ |
 | **P1** | **Project 1 - a service from a specification** | REST + validation + persistence + migrations + DTOs + tests, new small domain, written spec and acceptance tests | Uses blocks 1-5 | Empty project | ⬜ |
@@ -102,7 +102,7 @@
 | **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist | Uses everything | Empty project | ⬜ |
 
 ## Notes for the next labs
-- **Block 4 (REST for production) is now fully built (labs 14-15).** Next block: testing, lab 16 (`@QuarkusTest`, a minimal app). Tests in labs 11-15 already use `@QuarkusTest`, RestAssured, raw-JSON bodies and a `TestSupport`/`TestData` helper; lab 16 owns mocking (`@InjectMock`) and test speed. Schema changes always go through a Flyway migration (lab 11); lab 15 generates the schema with Hibernate only because it is a minimal app.
+- **Lab 17 (Dev Services and test profiles):** starts from a minimal app with a database. Lab 16 already used `@TestProfile` only as a cost demonstration and `@QuarkusTest` + Dev Services without configuring them; lab 17 owns `QuarkusTestProfile`, `QuarkusTestResourceLifecycleManager` and container reuse. Testing labs (16-18) are different from the others: the production code is finished and the learner completes the arrangement of test classes (the starter keeps the assertions and `verify(...)` calls, so a test cannot pass without the right mock, clock or cleanup). Schema changes always go through a Flyway migration (lab 11); labs 15-16 generate the schema with Hibernate only because they are minimal apps.
 - **Projects (P1, P2, P3):** the first one needs a written specification and an acceptance test suite that is visible but has no hints. Decide the domain when the block before it is finished.
 - **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
