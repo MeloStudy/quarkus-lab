@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        Aggregator only: it builds all the services with one command (and lets the IDE import
+        them together). It is NOT a parent POM: every service stays an independent Quarkus
+        project with its own pom.xml, Quarkus BOM and Maven wrapper, as in 00, 01 and 02.
+
+        Build everything:   mvn verify            (from this folder)
+        Build one service:  ./mvnw verify         (from the service folder)
+    -->
+    <groupId>lab.melostudy</groupId>
+    <artifactId>microservices-aggregator</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Building Microservices with Quarkus (aggregator)</name>
+
+    <modules>
+        <!-- Add one line per service as the course goes on, for example: -->
+        <!-- <module>03-01-catalog</module> -->
+    </modules>
+</project>

@@ -1,10 +1,10 @@
-# Notas - Microservices with Quarkus
+# Notes - Microservices with Quarkus
 
-Una sección por módulo: conceptos clave, diferencias con la versión actual de Quarkus, dudas pendientes.
+One section per module: key concepts, differences from the current Quarkus version, open questions.
 
 <!--
-## Módulo N - Título
-- Concepto:
-- Diferencias vs. Quarkus 3.39.5:
-- Dudas:
+## Module N - Title
+- Concept:
+- Differences vs. Quarkus 3.40.1.1:
+- Open questions:
 -->

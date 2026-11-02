@@ -1,27 +1,26 @@
 # 03 - Building Microservices with Quarkus
 
-Curso de Udemy: [Building Microservices with Quarkus](https://www.udemy.com/course/quarkus-building-microservices-with-quarkus/) (Antonio Goncalves).
+Udemy course: [Building Microservices with Quarkus](https://www.udemy.com/course/quarkus-building-microservices-with-quarkus/) (Antonio Goncalves).
 
-Este carril es **independiente de `labs/`**: se avanza al ritmo del curso y sin IA por defecto.
+This lane is **independent from `labs/`**: you move at the pace of the course, without AI by default.
 
-## Convenciones
+## Conventions
 
-- Un proyecto Maven por servicio, en su propia carpeta: `03-<NN>-<nombre>/` (ej. `03-01-catalog/`).
-- Igual que en `00`, `01` y `02`: proyectos independientes con su propio `mvnw`, sin POM padre.
-  Si el curso pide uno, se agrega aquí un `pom.xml` agregador.
-- Paquete base: `lab.melostudy`.
-- Versión de referencia: Quarkus `3.39.5`, Java 21 (la del curso puede diferir; anotar diferencias en `NOTES.md`).
-- Infraestructura compartida (BD, broker, etc.): se añadirá un `docker-compose.yml` en esta carpeta cuando haga falta.
-- Commits: `feat(lab_3): <descripción>`, un commit por módulo.
+- One Maven project per service, in its own folder: `03-<NN>-<name>/` (for example `03-01-catalog/`).
+- Same as `00`, `01` and `02`: independent projects with their own `mvnw` and Quarkus BOM. There is **no parent POM**.
+- [`pom.xml`](pom.xml) is an **aggregator only**: it lets you build every service at once and import them together in the IDE. Add a `<module>` line for each new service.
+- Base package: `lab.melostudy`.
+- Reference version: Quarkus `3.40.1.1` (LTS, supported until 2027-09-30), Java 21. The course may use a different version; write the differences down in [`NOTES.md`](NOTES.md).
+- Shared infrastructure (database, broker, etc.): a `docker-compose.yml` will be added to this folder when it is needed.
+- Commits: `feat(lab_3): <description>`, one commit per module.
 
-## Módulos
+## Modules
 
-| # | Módulo | Carpeta | Estado |
-|---|--------|---------|--------|
-| - | _Completar con el temario del curso_ | | |
+| # | Module | Folder | Status |
+|---|--------|--------|--------|
+| - | _Fill in with the course syllabus_ | | |
 
-## Si necesito ayuda de Claude
+## If I need help from an AI assistant
 
-Opcional. Pedirle que actúe como tutor: que explique el porqué y dé pistas antes del código,
-o que compare lo que enseña el curso con la documentación actual de Quarkus.
-Para trabajo guiado con ayuda de IA usar [`../labs`](../labs/SYLLABUS.md).
+Optional. Ask it to act as a tutor: explain the why and give hints before code, or compare what the course teaches with the current Quarkus documentation.
+For guided work with AI support use [`../labs`](../labs/SYLLABUS.md) (its rules are in [`../labs/AGENTS.md`](../labs/AGENTS.md)).
