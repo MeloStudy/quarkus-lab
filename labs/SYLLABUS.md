@@ -32,7 +32,7 @@
 ## Block 3 - Persistence
 | Lab | Topic | What is practiced | Status |
 |-----|-------|-------------------|--------|
-| 08 | Hibernate ORM with Panache | Active record vs repository, Dev Services (introduction) | ⬜ |
+| [08](lab-08-panache/README.md) | Hibernate ORM with Panache | Repository vs active record, Dev Services, paging in the database, uniqueness as a constraint (409), same-transaction writes, running the jar against a real PostgreSQL | 🟨 |
 | 09 | Relationships and inheritance | `@OneToMany`, `@ManyToMany`, inheritance strategies | ⬜ |
 | 10 | Queries and transactions | Pagination, queries, `@Transactional` | ⬜ |
 | 11 | Migrations | Flyway | ⬜ |
@@ -81,7 +81,7 @@
 | 30 | Capstone project | A complete service from scratch: REST + persistence + security + resilience + observability + container + CI, with a production checklist | ⬜ |
 
 ## Notes for the next labs
-- **Lab 08 (Panache):** replaces the in-memory `ProductRepository` of labs 04-06 with a real database via Dev Services; uniqueness of names becomes a database constraint (lab 05 said so).
+- **Lab 09 (relationships):** continues the Panache domain of lab 08 (`Product` entity, `TestData` helper, Dev Services). Remember that `lower(name)` could not be an `@Index`; lab 11 (Flyway) is where such SQL-level constraints belong.
 - Labs 09 and 10 continue the same domain (relationships, queries, transactions).
 
 ## Pace
