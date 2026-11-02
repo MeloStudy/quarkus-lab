@@ -186,7 +186,7 @@ mvn verify
 ## 🚀 Stretch goal
 1. Add an `X-Request-Id` header parameter/response header to every operation with an `OASFilter` (the filter from lab 04 sets it on every response).
 2. Generate a typed client from your stored `openapi.yaml` (for example with the OpenAPI Generator CLI) and call your service with it. What did the generator get wrong because the document was vague?
-3. Secure the document: add a basic security scheme to the contract (`@SecurityScheme`) even though the API is not protected yet; lab 21 will implement it.
+3. Secure the document: add a basic security scheme to the contract (`@SecurityScheme`) even though the API is not protected yet; lab 19 will implement it.
 
 ## 💡 Hints
 <details><summary>Hint 1 (direction)</summary>

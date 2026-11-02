@@ -116,7 +116,7 @@ mvn verify
 
 ## 💼 In real projects
 - **Dev mode is for development only:** it is never deployed. In the jar the profile is `prod`, and the Dev UI (`/q/dev-ui/`) does not exist (it returns 404), but `/q/health` does.
-- **You deploy the whole `target/quarkus-app/` folder** (`quarkus-run.jar` plus `lib/`, `app/` and `quarkus/`), not just the executable `.jar`. It is normally copied into a container image (lab 26).
+- **You deploy the whole `target/quarkus-app/` folder** (`quarkus-run.jar` plus `lib/`, `app/` and `quarkus/`), not just the executable `.jar`. It is normally copied into a container image (lab 33).
 - **Health endpoints are the orchestrator's probes:** in Kubernetes, `/q/health/live` and `/q/health/ready` are usually the *liveness* and *readiness probes*.
 - **Do not pin extension versions by hand:** `pom.xml` imports a platform BOM that manages them. Upgrading Quarkus means changing a single version (`quarkus.platform.version`).
 - **Use the wrapper (`mvnw`)** so the whole team and CI build with the same Maven version.

@@ -6,81 +6,105 @@
 **Format:** short labs (1-2 h). Two types depending on the topic:
 - **Type A (starter + solution):** code with behavior verifiable by tests. `starter/` has TODOs and failing tests; `solution/` is the reference.
 - **Type B (guide):** operational or exploratory topics (containers, native, Kubernetes, observability). A single project and a step-by-step guide with commands and "what you should see"; no separate solution.
+- **Project (P1, P2, P3):** 3-6 h. You build a small service from a written specification with acceptance tests, using what you learned so far. No TODO per task, no step-by-step; the solution is a reference, not a script.
 
 **Feedback:** per lab and asynchronous. The learner solves a lab, comments what could improve, and the improvements are applied to that lab, to the earlier ones and to the labs still to be built. Building never waits for feedback; the agent reminds the learner when a block is finished.
 
 **Status:** ⬜ pending · 🟨 built, waiting for the learner · ✅ done
 
+**Core / elective:** labs marked *(elective)* are valuable but skippable if time is short; everything else is the job-level core path.
+
 > Draft. Order and topics are adjusted according to how the labs turn out.
 
+## Design rules (agreed with the learner)
+1. **Starting point = the smallest app that makes the topic visible.** A lab continues the previous domain only when that domain *is* the topic (REST, validation, persistence). Otherwise it starts from a minimal app (one resource, in-memory data, no Docker unless the topic needs it). Spending time understanding a domain instead of the topic is a bug.
+2. **No single application grows through all the labs.** Integration happens in projects (P1, P2, P3), where the learner applies several topics to a new, small domain.
+3. **Every topic has one owner lab.** Other labs may touch it but must refer to the owner instead of re-teaching it (see "Owns / builds on").
+4. Labs 01-10 are built and stay as they are; if the learner finds 08-10 too heavy (they carry the REST Client and OpenAPI layers), they are slimmed down from feedback.
+
 ## Block 1 - Fundamentals
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| [01](lab-01-project-dev-mode/README.md) | Project and dev mode | Structure, live coding, Dev UI, extensions, `quarkus` CLI, running the jar | 🟨 |
-| [02](lab-02-configuration-profiles/README.md) | Configuration and profiles | `@ConfigProperty`, `@ConfigMapping`, profiles, precedence, fail-fast validation, jar and build-time vs runtime | 🟨 |
-| [03](lab-03-cdi/README.md) | CDI | Scopes, qualifiers, producers, interceptors, events, unused bean removal | 🟨 |
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| [01](lab-01-project-dev-mode/README.md) | Project and dev mode | Structure, live coding, Dev UI, extensions, `quarkus` CLI, running the jar | Owns dev mode, extensions. Health only as an example (24 owns it) | Generated project | 🟨 |
+| [02](lab-02-configuration-profiles/README.md) | Configuration and profiles | `@ConfigProperty`, `@ConfigMapping`, profiles, precedence, fail-fast validation, jar and build-time vs runtime | Owns configuration basics | Minimal app | 🟨 |
+| [03](lab-03-cdi/README.md) | CDI | Scopes, qualifiers, producers, interceptors, events, unused bean removal | Owns CDI and ArC | Minimal app | 🟨 |
 
 ## Block 2 - REST
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| [04](lab-04-quarkus-rest/README.md) | Quarkus REST | Resources, JSON, status codes, `Location`, parameters, paging, response filters, resource lifecycle | 🟨 |
-| [05](lab-05-validation-errors/README.md) | Validation and errors | Hibernate Validator, custom constraints, `@ServerExceptionMapper`, one error contract, catch-all without leaks | 🟨 |
-| [06](lab-06-openapi/README.md) | OpenAPI | Generated document, annotations, reusable error responses, `OASFilter`, Swagger UI vs production | 🟨 |
-| [07](lab-07-rest-client/README.md) | REST Client | `@RegisterRestClient(configKey)`, URL and timeouts per profile, translating remote failures (404, 5xx, timeout, garbage, down) into the `ApiError` contract, testing against a stub server | 🟨 |
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| [04](lab-04-quarkus-rest/README.md) | Quarkus REST | Resources, JSON, status codes, `Location`, parameters, paging, response filters, resource lifecycle | Owns the REST basics | Catalog API (in memory) | 🟨 |
+| [05](lab-05-validation-errors/README.md) | Validation and errors | Hibernate Validator, custom constraints, `@ServerExceptionMapper`, one error contract, catch-all without leaks | Owns validation and the error contract | Lab 04 | 🟨 |
+| [06](lab-06-openapi/README.md) | OpenAPI | Generated document, annotations, reusable error responses, `OASFilter`, Swagger UI vs production | Owns the API contract | Lab 05 | 🟨 |
+| [07](lab-07-rest-client/README.md) | REST Client | `@RegisterRestClient(configKey)`, URL and timeouts per profile, translating remote failures (404, 5xx, timeout, garbage, down) into the `ApiError` contract, testing against a stub server | Owns the client and its timeouts. Intro to test doubles | Lab 06 | 🟨 |
 
 ## Block 3 - Persistence
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| [08](lab-08-panache/README.md) | Hibernate ORM with Panache | Repository vs active record, Dev Services, paging in the database, uniqueness as a constraint (409), same-transaction writes, running the jar against a real PostgreSQL | 🟨 |
-| [09](lab-09-relationships/README.md) | Relationships and inheritance | `@ManyToMany` and `@OneToMany`/`@ManyToOne` (owning vs inverse side), `SINGLE_TABLE` inheritance, `LazyInitializationException`, N+1, cascade vs bulk delete | 🟨 |
-| [10](lab-10-queries-transactions/README.md) | Queries and transactions | Safe dynamic queries (named parameters, `locate` vs `LIKE`), aggregates with `select new`, rollback rules (checked exceptions), `REQUIRES_NEW`, lost updates and pessimistic locking | 🟨 |
-| 11 | Migrations | Flyway | ⬜ |
-| 12 | DTOs and MapStruct | Separating entity and DTO, mapping with MapStruct (`componentModel = cdi`) | ⬜ |
-| 13 | Cache and scheduled tasks | `quarkus-cache`, `@Scheduled` | ⬜ |
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| [08](lab-08-panache/README.md) | Hibernate ORM with Panache | Repository vs active record, Dev Services, paging in the database, uniqueness as a constraint (409), same-transaction writes, running the jar against a real PostgreSQL | Owns Panache and Dev Services (intro) | Lab 07 | 🟨 |
+| [09](lab-09-relationships/README.md) | Relationships and inheritance | `@ManyToMany` and `@OneToMany`/`@ManyToOne` (owning vs inverse side), `SINGLE_TABLE` inheritance, `LazyInitializationException`, N+1, cascade vs bulk delete | Owns mapping | Lab 08 | 🟨 |
+| [10](lab-10-queries-transactions/README.md) | Queries and transactions | Safe dynamic queries (named parameters, `locate` vs `LIKE`), aggregates with `select new`, rollback rules (checked exceptions), `REQUIRES_NEW`, lost updates and pessimistic locking | Owns queries and transactions | Lab 09 | 🟨 |
+| 11 | Migrations | Flyway: versioned migrations, `validate`, SQL-level constraints Hibernate cannot declare, baseline | Owns the schema in production | **Slim persistence base** (lab 10 without REST Client, OpenAPI and stub) | ⬜ |
+| 12 | DTOs and MapStruct | Separating entity and DTO, mapping with MapStruct (`componentModel = cdi`), mapping inside the transaction | Builds on 09 (lazy loading) | Slim persistence base | ⬜ |
+| 13 | Cache and scheduled tasks | `quarkus-cache` (keys, invalidation, the stale data trap), `@Scheduled` (concurrent execution, cluster caveat) | Owns cache and scheduling | Minimal app with one slow lookup | ⬜ |
 
-## Block 4 - Testing
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| 14 | `@QuarkusTest` | RestAssured, mocks, `@InjectMock` | ⬜ |
-| 15 | Dev Services and test profiles | Containers in tests, `QuarkusTestProfile` | ⬜ |
-| 16 | Integration tests between services | `@QuarkusIntegrationTest`, WireMock, contracts between services | ⬜ |
+## Block 4 - REST for production
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| 14 | JSON in depth | `java.time`, enums, unknown properties, naming, polymorphism, custom (de)serializers, `ObjectMapper` customization | Owns serialization | Minimal app | ⬜ |
+| 15 | HTTP for production | CORS, ETag and `If-Match` / `If-None-Match` (optimistic concurrency over HTTP), file upload and download, API versioning | Builds on 10 (optimistic locking was a stretch there) | Minimal app with `@Version` entity | ⬜ |
 
-## Block 5 - Reactive and communication
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| 17 | Execution model | Event loop vs worker threads, `@Blocking`/`@NonBlocking`, virtual threads (`@RunOnVirtualThread`) | ⬜ |
-| 18 | Mutiny | `Uni`, `Multi`, composition, errors | ⬜ |
-| 19 | Reactive messaging | SmallRye Reactive Messaging (in-memory, then Kafka) | ⬜ |
-| 20 | gRPC | Defining `.proto`, gRPC server and client, streaming | ⬜ |
+## Block 5 - Testing
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| 16 | `@QuarkusTest` | RestAssured, `@InjectMock`, `@TestTransaction`, test lifecycle and speed | Owns mocking | Minimal app | ⬜ |
+| 17 | Dev Services and test profiles | Containers in tests, `QuarkusTestProfile`, `QuarkusTestResourceLifecycleManager`, reuse | Owns test profiles (Dev Services intro was lab 08) | Minimal app with a database | ⬜ |
+| 18 | Integration tests between services | `@QuarkusIntegrationTest`, WireMock, contracts between services | Owns WireMock and contracts | Two minimal services | ⬜ |
+| **P1** | **Project 1 - a service from a specification** | REST + validation + persistence + migrations + DTOs + tests, new small domain, written spec and acceptance tests | Uses blocks 1-5 | Empty project | ⬜ |
 
 ## Block 6 - Security
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| 21 | Authentication and roles | Basic, `@RolesAllowed`, identity in tests | ⬜ |
-| 22 | JWT and OIDC | SmallRye JWT, Keycloak with Dev Services | ⬜ |
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| 19 | Authentication and roles | Basic auth, `@RolesAllowed`, identity in tests (`@TestSecurity`) | Owns authorization basics | Minimal app | ⬜ |
+| 20 | JWT | SmallRye JWT: verifying tokens, claims, roles from a token, token in tests | Owns JWT | Minimal app | ⬜ |
+| 21 | OIDC and Keycloak | OIDC service apps, Keycloak with Dev Services, token propagation | Builds on 20 | Minimal app | ⬜ |
+| 22 | TLS and secrets | HTTPS, security headers, secrets out of the repo and out of the jar | Owns secrets (builds on 02) | Minimal app | ⬜ |
 
 ## Block 7 - Resilience and observability
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| 23 | Fault tolerance | Retry, timeout, circuit breaker, fallback | ⬜ |
-| 24 | Health and metrics | SmallRye Health, Micrometer | ⬜ |
-| 25 | Logging and tracing | Structured logging, OpenTelemetry | ⬜ |
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| 23 | Fault tolerance | Retry, timeout, circuit breaker, fallback, bulkhead | Owns resilience; builds on the REST Client and timeouts of 07 | Minimal app with a flaky remote (stub of 07) | ⬜ |
+| 24 | Health and metrics | SmallRye Health (liveness vs readiness), Micrometer, custom metrics | Owns health and metrics | Minimal app | ⬜ |
+| 25 | Logging and tracing | Structured logging, correlation id, OpenTelemetry | Owns logging and tracing (the request id of 04 is the starting idea) | Minimal app | ⬜ |
+| **P2** | **Project 2 - a service that is secure and observable** | A service that calls a remote dependency: authentication, resilience, metrics, tracing, health, with a written spec and acceptance tests | Uses blocks 6-7 (and 3 if it needs data) | Empty project | ⬜ |
 
-## Block 8 - Delivery
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| 26 | Containers | Dockerfiles (JVM), build with Jib/Docker | ⬜ |
-| 27 | Native | GraalVM/Mandrel, limitations, reflection | ⬜ |
-| 28 | Kubernetes | Kubernetes extension, generated manifests | ⬜ |
-| 29 | CI with GitHub Actions | Pipeline: build, tests, image; Maven cache | ⬜ |
+## Block 8 - Reactive and communication
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| 26 | Execution model | Event loop vs worker threads, `@Blocking`/`@NonBlocking`, virtual threads (`@RunOnVirtualThread`) | Owns the execution model | Minimal app | ⬜ |
+| 27 | Mutiny | `Uni`, `Multi`, composition, errors, backpressure basics | Owns Mutiny | Minimal app | ⬜ |
+| 28 | Reactive messaging (in memory) | SmallRye Reactive Messaging channels, acknowledgement, failure handling | Owns messaging concepts | Minimal app | ⬜ |
+| 29 | Kafka *(elective)* | Kafka with Dev Services, serialization, consumer groups, dead-letter, outbox idea | Builds on 28 and on 10 (transactions) | Minimal app | ⬜ |
+| 30 | gRPC *(elective)* | Defining `.proto`, gRPC server and client, streaming | Owns gRPC | Minimal app | ⬜ |
 
-## Block 9 - Capstone
-| Lab | Topic | What is practiced | Status |
-|-----|-------|-------------------|--------|
-| 30 | Capstone project | A complete service from scratch: REST + persistence + security + resilience + observability + container + CI, with a production checklist | ⬜ |
+## Block 9 - Maintaining and delivering
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| 31 | Multi-module projects and Jandex | Library modules, bean discovery across jars (Jandex index, `beans.xml`), shared BOM | Owns project structure | Two modules | ⬜ |
+| 32 | Upgrading Quarkus | `quarkus update`, release notes and migration guides, LTS vs regular, preparing for Quarkus 4 | Owns upgrades | Project on an older platform version | ⬜ |
+| 33 | Containers | Dockerfiles (JVM), build with Jib/Docker, sizing and layers | Owns images | Minimal app | ⬜ |
+| 34 | Native *(elective)* | GraalVM/Mandrel, limitations, reflection (`@RegisterForReflection`) | Owns native | Minimal app | ⬜ |
+| 35 | Kubernetes and configuration | Kubernetes extension, generated manifests, ConfigMap and Secret, probes (from 24) | Builds on 22, 24 and 33 | Minimal app | ⬜ |
+| 36 | CI with GitHub Actions | Pipeline: build, tests, image; Maven cache | Owns CI | Minimal app | ⬜ |
+
+## Block 10 - Capstone
+| Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
+|-----|-------|-------------------|------------------|-------------|--------|
+| **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist | Uses everything | Empty project | ⬜ |
 
 ## Notes for the next labs
-- **Lab 11 (migrations, Flyway):** the schema is still generated by Hibernate in dev/test (`product`, `label`, `review`, `customer_order`, `audit_entry`, join table). Flyway should take over: versioned migrations, `schema-management.strategy=none` or `validate`, and the SQL-level constraints Hibernate cannot declare (functional index on `lower(name)`, `CHECK` for review kinds). `TestData` truncates by table name, so migrations must keep those names.
+- **Lab 11 (migrations, Flyway):** starts from a *slim persistence base*: the lab 10 solution without `RateClient`, `PricingService`, the price endpoint, the OpenAPI classes and the rates stub. The schema is still generated by Hibernate in dev/test (`product`, `label`, `review`, `customer_order`, `audit_entry`, join table). Flyway takes over: versioned migrations, `schema-management.strategy=none` or `validate`, and the SQL-level constraints Hibernate cannot declare (functional index on `lower(name)`, `CHECK` for review kinds). `TestData` truncates by table name, so migrations must keep those names.
+- **Projects (P1, P2, P3):** the first one needs a written specification and an acceptance test suite that is visible but has no hints. Decide the domain when the block before it is finished.
+- **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
 ## Pace
 One lab at a time: it is built and verified; the learner solves and reviews it whenever they can; feedback is applied to everything built so far and to what comes next.

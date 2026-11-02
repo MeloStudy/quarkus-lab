@@ -8,10 +8,10 @@ A personal study repository: courses already completed, a course in progress, an
 |---|---|---|
 | `00-getting-started`, `01-rest-book`, `02-persistence` | Projects from the first two Udemy courses | Closed (kept as they are) |
 | [`03-microservices`](03-microservices/README.md) | Third Udemy course, at its own pace, without AI by default | In progress |
-| [`labs`](labs/SYLLABUS.md) | 30 guided labs: each one has a README, a `starter/` with failing tests and a `solution/` | Labs 01-10 built, being reviewed by the learner |
+| [`labs`](labs/SYLLABUS.md) | 36 guided labs and 3 projects: each lab has a README, a `starter/` with failing tests and a `solution/` | Labs 01-10 built, being reviewed by the learner |
 
 ## 🧪 The labs in a nutshell
-The [syllabus](labs/SYLLABUS.md) covers, in nine blocks: fundamentals (dev mode, configuration, CDI), REST (validation, OpenAPI, REST Client), persistence, testing, reactive and messaging, security, resilience and observability, delivery (containers, native, Kubernetes, CI) and a capstone project.
+The [syllabus](labs/SYLLABUS.md) covers, in ten blocks: fundamentals (dev mode, configuration, CDI), REST (validation, OpenAPI, REST Client), persistence, REST for production, testing, security, resilience and observability, reactive and messaging, maintaining and delivering (multi-module, upgrades, containers, native, Kubernetes, CI) and a capstone. Three projects (after testing, after observability, and the capstone) integrate several topics on small new domains.
 
 How a lab works:
 1. Open the lab's `README.md` (scenario, tasks, hints, self-assessment).

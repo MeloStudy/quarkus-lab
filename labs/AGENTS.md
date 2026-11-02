@@ -126,7 +126,9 @@ Lessons from labs 01-06 (apply them from the start):
 Done by hand on purpose, so that it forces a review of the docs. Steps: read the release notes and the migration guide of the new version; make sure it is an LTS (or decide explicitly otherwise); edit `quarkus.platform.version` in **every** `labs/*/*/pom.xml`; update the version in the READMEs and in `SYLLABUS.md`; run `labs/verify.ps1`; fix and re-verify every claim that changed.
 
 ## Scaffolding and definition of done
-Scaffold a new lab by copying `pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn/` and `.gitignore` from the latest lab's `starter/` (no network needed), then change the `artifactId`. Keep the platform version identical across labs; upgrade all labs together, never one by one. `.env` stays in `.gitignore`.
+Scaffold a new lab by copying `pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn/` and `.gitignore` from the latest lab's `starter/` (no network needed), then change the `artifactId`.
+
+**Starting point of a lab (see "Design rules" in `SYLLABUS.md`):** use the smallest app that makes the topic visible. Continue the previous lab's domain only when that domain is the topic (REST, validation, persistence); otherwise start from a minimal app (one resource, in-memory data, no Docker unless the topic needs it). Do not carry code or tests that are unrelated to the topic. The "Starts from" column of the syllabus says which one each lab uses. Projects (P1, P2, P3) start from an empty project with a written specification and acceptance tests. Keep the platform version identical across labs; upgrade all labs together, never one by one. `.env` stays in `.gitignore`.
 
 A lab is done only when all of this is true:
 - [ ] `solution` is green and `starter` fails exactly on the target tests (a regression-guard test that passes from the start is welcome). Run `labs/verify.ps1` (all labs) or `labs/verify.ps1 -Lab <folder>`; it checks green solution / red starter.
