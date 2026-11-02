@@ -135,6 +135,7 @@ Lessons from labs 11-16 (apply them from the start):
 - **A starter test that only checks a 4xx passes for the wrong reason when the happy path is broken:** make negative tests start from a request that is known to be valid (`@BeforeEach` asserting `201`).
 - **Libraries outside the Quarkus BOM** (MapStruct in lab 12) need an explicit version and a written justification in the README.
 - **Testing labs** (16-18) keep the production code finished and ship test classes whose assertions and `verify(...)` calls are written, with the arrangement (mocks, clock, cleanup) missing.
+- **Multi-module labs and integration tests:** `verify.ps1` runs `mvnw -q -fae verify -DskipITs=false` when a variant contains `*IT.java` (otherwise `test`) and reads the reports of every module. Integration tests do not run when the unit tests of their module fail, so a red starter may show fewer tests than the solution.
 - **Windows tooling:** `curl.exe -d` with nested JSON may lose its quotes in PowerShell 5.1 (use a file with `--data-binary @file`); never kill processes by pattern or remove containers you did not create.
 
 ## Documentation sources and safety

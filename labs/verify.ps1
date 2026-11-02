@@ -20,15 +20,21 @@ foreach ($dir in Get-ChildItem -Path $root -Directory -Filter "lab-*" | Where-Ob
 
         Push-Location $project
         try {
-            if (Test-Path target\surefire-reports) { Remove-Item target\surefire-reports -Recurse -Force }
-            & .\mvnw.cmd -q test *> $null
+            # Projects with integration tests (*IT.java) need the packaged application: `verify`, not `test`.
+            # Multi-module projects keep their reports in every module, so look for them recursively.
+            $hasIT = [bool](Get-ChildItem -Path $project -Recurse -Filter '*IT.java' -File -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '[/\\]target[/\\]' } | Select-Object -First 1)
+            Get-ChildItem -Path $project -Recurse -Directory -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -in 'surefire-reports', 'failsafe-reports' } |
+                ForEach-Object { Remove-Item $_.FullName -Recurse -Force }
+            if ($hasIT) { & .\mvnw.cmd -q -fae verify '-DskipITs=false' *> $null } else { & .\mvnw.cmd -q -fae test *> $null }
             $tests = 0; $bad = 0
-            if (Test-Path target\surefire-reports) {
-                foreach ($file in Get-ChildItem target\surefire-reports\*.xml) {
-                    $suite = ([xml](Get-Content $file.FullName)).testsuite
-                    $tests += [int]$suite.tests
-                    $bad += [int]$suite.failures + [int]$suite.errors
-                }
+            $reports = Get-ChildItem -Path $project -Recurse -Filter '*.xml' -File -ErrorAction SilentlyContinue |
+                Where-Object { $_.DirectoryName -match 'target[/\\](surefire|failsafe)-reports$' }
+            foreach ($file in $reports) {
+                $suite = ([xml](Get-Content $file.FullName)).testsuite
+                if ($null -eq $suite) { continue }
+                $tests += [int]$suite.tests
+                $bad += [int]$suite.failures + [int]$suite.errors
             }
         } finally { Pop-Location }
 

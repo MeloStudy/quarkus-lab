@@ -1,0 +1,42 @@
+{
+  "consumer": "orders",
+  "provider": "inventory",
+  "interactions": [
+    {
+      "name": "stock of a known sku",
+      "given": { "A1": 5, "B2": 0 },
+      "request": { "method": "GET", "path": "/stock/A1" },
+      "response": { "status": 200, "body": { "sku": "A1", "available": 5 } }
+    },
+    {
+      "name": "stock of a sku that is sold out",
+      "given": { "A1": 5, "B2": 0 },
+      "request": { "method": "GET", "path": "/stock/B2" },
+      "response": { "status": 200, "body": { "sku": "B2", "available": 0 } }
+    },
+    {
+      "name": "stock of an unknown sku",
+      "given": { "A1": 5, "B2": 0 },
+      "request": { "method": "GET", "path": "/stock/ZZ" },
+      "response": { "status": 404, "body": { "error": "UNKNOWN_SKU" } }
+    },
+    {
+      "name": "reserve within the available stock",
+      "given": { "A1": 5, "B2": 0 },
+      "request": { "method": "POST", "path": "/stock/A1/reserve", "body": { "quantity": 2 } },
+      "response": { "status": 200, "body": { "sku": "A1", "reserved": 2, "remaining": 3 } }
+    },
+    {
+      "name": "reserve more than the available stock",
+      "given": { "A1": 5, "B2": 0 },
+      "request": { "method": "POST", "path": "/stock/A1/reserve", "body": { "quantity": 9 } },
+      "response": { "status": 409, "body": { "error": "INSUFFICIENT_STOCK", "available": 5 } }
+    },
+    {
+      "name": "reserve an unknown sku",
+      "given": { "A1": 5, "B2": 0 },
+      "request": { "method": "POST", "path": "/stock/ZZ/reserve", "body": { "quantity": 1 } },
+      "response": { "status": 404, "body": { "error": "UNKNOWN_SKU" } }
+    }
+  ]
+}
