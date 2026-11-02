@@ -10,6 +10,15 @@ These rules apply to all work inside this folder. Do not touch `00-*`, `01-*`, `
 - Reference stack: Quarkus 3.40.1.1 (LTS, supported until 2027-09-30), Java 21, Maven wrapper.
 - Progress lives in `SYLLABUS.md` and in git history, not in the conversation. A fresh session must be able to continue by reading only this file and `SYLLABUS.md`.
 
+## Repository map: two lanes
+| Path | Owner | Purpose |
+|---|---|---|
+| `00-getting-started`, `01-rest-book`, `02-persistence` | the learner | Finished projects from the first two Udemy courses. Closed: never modify or upgrade. |
+| `03-microservices/` | the learner | Lane A: the third Udemy course, followed at the course's pace without AI by default. Independent Maven projects plus an aggregator `pom.xml`. Touch only if asked. |
+| `labs/` | agent + learner | Lane B: this guided path. The agent builds labs; the learner solves them and gives feedback. |
+
+Division of work in `labs/`: the agent decides and validates each lab's approach and builds it; the learner solves it on their own; the retrospective feeds the next lab.
+
 ## Language
 - **Everything in the repository is in English**: READMEs, code, comments, identifiers, test names, string literals, commit messages, folder names (`lab-NN-<topic-in-english>`). This matches the rest of the repo (`00-*`, `01-*`, `02-*`) and the language of the official docs.
 - The conversation with the user is in Spanish.
@@ -76,6 +85,22 @@ READMEs are learning material; they must be easy to scan and follow.
 6. Do not `git push` unless the user asks.
 7. Secrets and `.env` files are never committed.
 8. Do not rewrite code files with PowerShell 5.1 `Set-Content -Encoding utf8` (it adds a BOM); use the edit tool or `sed`.
+
+## Scaffolding and definition of done
+Scaffold a new lab by copying `pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn/` and `.gitignore` from the latest lab's `starter/` (no network needed), then change the `artifactId`. Keep the platform version identical across labs; upgrade all labs together, never one by one. `.env` stays in `.gitignore`.
+
+A lab is done only when all of this is true:
+- [ ] `solution` is green and `starter` fails exactly on the target tests (a regression-guard test that passes from the start is welcome).
+- [ ] Every command and quoted output in the README was run on the project's version.
+- [ ] The README follows `_template/README.md` (style rules above) and contains no leftover Spanish.
+- [ ] No BOM in any file; no `target/` or `.env` committed.
+- [ ] `SYLLABUS.md` status is updated (🟨 once built; ✅ only after the learner finishes and gives feedback).
+- [ ] One commit `feat(lab_N): ...` ending with the session attribution line the harness requires.
+
+## Environment gotchas (Windows)
+- Git Bash: `./mvnw` can fail on `JAVA_HOME`; `/x`-style values need `MSYS_NO_PATHCONV=1`.
+- PowerShell 5.1: quote `-Dx.y=z`; `curl` is an alias, use `curl.exe`; avoid `Set-Content -Encoding utf8` (BOM).
+- Temporary experiments go in the scratchpad, never in the repo.
 
 ## Context management
 - Long verifications (compiling, running `solution` and `starter` tests, running the jar) produce a lot of output. If the agent supports subagents, delegate that verification and receive only a summary (what passed/failed and the key messages).

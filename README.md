@@ -8,6 +8,13 @@ Supersonic Subatomic Java
   - [Building Microservices with Quarkus](https://www.udemy.com/course/quarkus-building-microservices-with-quarkus/)
   - [Accessing Relational Databases with Quarkus](https://www.udemy.com/course/quarkus-accessing-relational-databases-with-quarkus/)
 
+## Repository layout
+| Folder | Content |
+|---|---|
+| `00-getting-started`, `01-rest-book`, `02-persistence` | Projects from the first two Udemy courses (closed) |
+| `03-microservices` | Third Udemy course, followed at its own pace |
+| [`labs`](labs/SYLLABUS.md) | Guided, up-to-date Quarkus labs (starter + solution). Rules for AI agents in [`labs/AGENTS.md`](labs/AGENTS.md) |
+
 ## Resources
 - http://code.quarkus.io/
 
