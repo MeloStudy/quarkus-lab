@@ -5,7 +5,7 @@ This file is the single source of instructions for any AI agent (`AGENTS.md` for
 These rules apply to all work inside this folder. Do not touch `00-*`, `01-*`, `02-*` or `03-microservices` unless explicitly asked. (Decided on purpose: the closed course projects keep even their non-executable `mvnw` mode; nobody will run them on Linux.)
 
 ## Start here (fresh session)
-1. Read this file and `SYLLABUS.md` (status of every lab, the batches, notes for the next lab).
+1. Read this file and `SYLLABUS.md` (status of every lab, the blocks, notes for the next lab).
 2. Run `git log --oneline -15` and `git status` to see where the work stands.
 3. Build the next lab that is still ⬜ in the syllabus, following "When building a lab" and the quality standard below. Do not ask which one: the syllabus order is the plan.
 
@@ -13,7 +13,9 @@ These rules apply to all work inside this folder. Do not touch `00-*`, `01-*`, `
 - **Chat in Spanish; repository content in English.**
 - **Decide and recommend; do not hand decisions back.** When there is a real choice that is the learner's (scope, closed projects, anything outward-facing), present a short comparison with a clear recommendation and its reasoning, then wait. Never ask for things that are the agent's job (lab approach, quality, verification).
 - **Be honest about errors.** If something went wrong, say what, whether it is fixed, and what changed to prevent it. Report outcomes faithfully (what passed, what failed).
-- **The learner solves the labs on their own** and reviews them in batches: batch 1 = labs 01-05, batch 2 = labs 06-10. Until the learner gives feedback, labs stay 🟨 and later batches are adjusted from the feedback.
+- **The learner solves the labs on their own and gives feedback per lab, asynchronously, at any moment.** The agent never waits for feedback to build the next lab (the learner is the bottleneck, not the agent). Labs stay 🟨 until the learner has solved them and given feedback on that lab; only then ✅.
+- **When feedback arrives**, apply it to the lab it is about, check whether the same issue exists in earlier labs and fix it there too (re-run `verify.ps1` on every lab touched), and carry it into the labs not yet built. Record lessons that apply to every lab in "Workflow and lessons learned".
+- **Block reminder:** when a syllabus block is finished (last lab of the block built), say so in one short message: which labs the block contains, what was verified, and invite feedback. It is a reminder, never a gate.
 - **Git:** commit locally as you go; push only at milestones or on request (see the push policy below).
 
 ## Context

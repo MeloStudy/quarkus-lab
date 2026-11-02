@@ -90,6 +90,9 @@ java -jar target\quarkus-app\quarkus-run.jar
 java -jar target/quarkus-app/quarkus-run.jar
 ```
 
+> [!WARNING]
+> What you saw in dev mode is not what runs in production. Before you read the answer, check which of the endpoints you used in the previous tasks still respond.
+
 - [ ] Look inside `target/quarkus-app/`: what would you have to copy to a server to deploy?
 
 **Success criteria:** the 3 tests in `GreetingResourceTest` pass and you have run the jar from Task 5.
@@ -148,6 +151,25 @@ quarkus extension add smallrye-health
 
 - Path parameter: `@Path("/{name}")` + `@PathParam("name")`.
 - If dev mode is already running, you do not need to restart it after adding the extension.
+</details>
+
+## ✔️ Verified answers
+<details><summary>Open only after finishing the tasks</summary>
+
+Everything here was checked by running the packaged jar of `solution/` on Quarkus 3.40.1.1.
+
+**Task 5 - what runs outside dev mode.** The startup log says `Profile prod activated.` (no `Live Coding`), and the installed features are `cdi, rest, smallrye-context-propagation, smallrye-health, vertx`. Status codes of the endpoints:
+
+| Endpoint (in the jar) | Status |
+|---|---|
+| `/hello` | 200 |
+| `/hello/Ana` | 200 |
+| `/q/health` and `/q/health/live` | 200 |
+| `/q/dev-ui/` | **404** |
+
+`/q/health` answers `{"status": "UP", "checks": []}` (the layout of the JSON may differ: it is pretty-printed). The Dev UI, which you used in dev mode, does not exist in the jar.
+
+**What to deploy.** `target/quarkus-app/` contains `quarkus-run.jar`, `lib/`, `app/` and `quarkus/` (plus `quarkus-app-dependencies.txt`). The whole folder is the deployable unit: copying only `quarkus-run.jar` somewhere else and running it fails with `ClassNotFoundException: io.quarkus.bootstrap.runner.QuarkusEntryPoint`.
 </details>
 
 ## 🎤 Self-assessment

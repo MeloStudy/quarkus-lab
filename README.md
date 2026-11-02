@@ -8,7 +8,7 @@ A personal study repository: courses already completed, a course in progress, an
 |---|---|---|
 | `00-getting-started`, `01-rest-book`, `02-persistence` | Projects from the first two Udemy courses | Closed (kept as they are) |
 | [`03-microservices`](03-microservices/README.md) | Third Udemy course, at its own pace, without AI by default | In progress |
-| [`labs`](labs/SYLLABUS.md) | 30 guided labs: each one has a README, a `starter/` with failing tests and a `solution/` | Labs 01-06 built, being reviewed |
+| [`labs`](labs/SYLLABUS.md) | 30 guided labs: each one has a README, a `starter/` with failing tests and a `solution/` | Labs 01-10 built, being reviewed by the learner |
 
 ## 🧪 The labs in a nutshell
 The [syllabus](labs/SYLLABUS.md) covers, in nine blocks: fundamentals (dev mode, configuration, CDI), REST (validation, OpenAPI, REST Client), persistence, testing, reactive and messaging, security, resilience and observability, delivery (containers, native, Kubernetes, CI) and a capstone project.

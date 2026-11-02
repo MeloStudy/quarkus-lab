@@ -7,7 +7,6 @@ import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
-import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 
 /**
  * Adds the "unexpected failure" response to every operation, so it does not have to be
