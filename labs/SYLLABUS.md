@@ -16,7 +16,7 @@
 |-----|------|-----------------|--------|
 | 01 | Proyecto y dev mode | Estructura, live coding, Dev UI, extensiones, `quarkus` CLI | 🟨 |
 | 02 | Configuración y perfiles | `@ConfigProperty`, `@ConfigMapping`, perfiles, precedencia, validación fail-fast, jar y build-time vs runtime | 🟨 |
-| 03 | CDI | Scopes, qualifiers, producers, interceptors, eventos | ⬜ |
+| 03 | CDI | Scopes, qualifiers, producers, interceptors, eventos | 🟨 |
 
 ## Bloque 2 - REST
 | Lab | Tema | Qué se practica | Estado |
