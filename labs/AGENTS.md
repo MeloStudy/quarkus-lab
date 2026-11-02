@@ -82,7 +82,7 @@ READMEs are learning material; they must be easy to scan and follow.
 3. Prefer current extensions and APIs (Quarkus REST, not RESTEasy Classic).
 4. Update the status in `SYLLABUS.md`.
 5. One commit per lab: `feat(lab_N): <description>`.
-6. Do not `git push` unless the user asks.
+6. Push policy: commit locally as you go, and `git push` only at milestones (a lab that meets the definition of done, or a finished block) or when the user asks. Never push work in progress.
 7. Secrets and `.env` files are never committed.
 8. Do not rewrite code files with PowerShell 5.1 `Set-Content -Encoding utf8` (it adds a BOM); use the edit tool or `sed`.
 
@@ -96,6 +96,7 @@ A lab is done only when all of this is true:
 - [ ] No BOM in any file; no `target/` or `.env` committed.
 - [ ] `SYLLABUS.md` status is updated (🟨 once built; ✅ only after the learner finishes and gives feedback).
 - [ ] One commit `feat(lab_N): ...` ending with the session attribution line the harness requires.
+- [ ] Pushed to `origin/main` (milestone reached).
 
 ## Environment gotchas (Windows)
 - Git Bash: `./mvnw` can fail on `JAVA_HOME`; `/x`-style values need `MSYS_NO_PATHCONV=1`.
