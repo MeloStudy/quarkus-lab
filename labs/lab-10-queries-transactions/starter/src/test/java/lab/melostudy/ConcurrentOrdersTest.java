@@ -15,14 +15,12 @@ import java.util.concurrent.Future;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 
 /** Lab 10, task 4: concurrent orders for the last units must neither oversell nor lose updates. */
 @QuarkusTest
-@QuarkusTestResource(RatesStubResource.class)
 class ConcurrentOrdersTest {
 
     @Inject

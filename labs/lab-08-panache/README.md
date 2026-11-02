@@ -45,12 +45,12 @@ Until now the catalog lived in a `HashMap`: restart the app and everything is go
 - [Dev Services for databases](https://quarkus.io/guides/databases-dev-services)
 
 ## 🧭 Scenario
-The catalog API of labs 04-07 keeps working exactly the same from the outside, but `ProductRepository` stops being an in-memory map. Provided in `starter/`:
+The catalog API of labs 04-05 (REST, validation and the error contract) keeps working exactly the same from the outside, but `ProductRepository` stops being an in-memory map. Provided in `starter/`:
 
 - `Product` is now a JPA entity (the API returns it directly; lab 12 separates entity and DTO). Its `nameKey` column holds the lower-cased name.
 - `PriceChange` is an active-record entity that records price changes.
 - `import.sql` seeds sample products in **dev mode only**.
-- The tests: a `TestData` helper (plain SQL, so it does not depend on your code) puts the database in a known state before each test (the five sample products with ids 1-5, no history). All earlier tests are carried over as regression guards.
+- The tests: a `TestData` helper (plain SQL, so it does not depend on your code) puts the database in a known state before each test (the five sample products with ids 1-5, no history). The tests of labs 04-05 are carried over as regression guards.
 
 Your job is `ProductRepository` and `PriceChange.historyOf`, plus one change in `Product`. The REST layer must not change.
 
@@ -217,7 +217,7 @@ Everything here was run on Quarkus 3.40.1.1 with PostgreSQL via Dev Services.
 - With the database up but empty and the production default (`strategy=none`): the app starts, and every call that touches the table fails with `500 INTERNAL_ERROR`; the log says `ERROR: relation "product" does not exist`.
 - The strategy can be overridden at runtime: with `QUARKUS_HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY=update` the table was created (id identity, `name_key` unique, `price numeric(9,2)`), `GET /products` returned `[]` (**`import.sql` is not loaded in production**), the first `POST` answered `201` and the second one with different case `409 CONFLICT`. `update` is a convenience for experiments, not a production strategy.
 
-**A mistake to avoid in tests:** a `@QuarkusTest` class that does not reset the data passes or fails depending on which test class ran before it. Two test classes with a different test profile (like `UnreachableRemoteTest`) even boot a fresh application. All test classes here reset the data in `@BeforeEach`.
+**A mistake to avoid in tests:** a `@QuarkusTest` class that does not reset the data passes or fails depending on which test class ran before it. A test class with its own test profile even boots a fresh application, against fresh data. All test classes here reset the data in `@BeforeEach`.
 </details>
 
 ## 🎤 Self-assessment

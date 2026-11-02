@@ -8,13 +8,11 @@ import static org.hamcrest.Matchers.hasSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 /** Lab 10, task 1: dynamic queries and aggregates computed by the database. */
 @QuarkusTest
-@QuarkusTestResource(RatesStubResource.class)
 class SearchAndReportTest {
 
     @Inject

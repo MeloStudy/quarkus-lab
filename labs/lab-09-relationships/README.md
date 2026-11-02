@@ -45,7 +45,7 @@ Real data is never one table. Products have labels, reviews belong to a product,
 - [Jakarta Persistence 3.2](https://jakarta.ee/specifications/persistence/3.2/)
 
 ## 🧭 Scenario
-The catalog of lab 08 grows three features. Everything from labs 04-08 must keep working (their tests are carried over as regression guards).
+The catalog of lab 08 grows three features. Everything from labs 04-08 must keep working (the tests of the catalog API are carried over as regression guards).
 
 | Feature | Endpoint | Mapping |
 |---|---|---|
@@ -73,7 +73,7 @@ Run the tests once before touching anything:
 ./mvnw test
 ```
 
-You should see 87 tests and 11 failures, all in `LabelsTest`, `ReviewsTest` and `FetchingTest`.
+You should see 64 tests and 11 failures, all in `LabelsTest`, `ReviewsTest` and `FetchingTest`.
 
 ## ✅ Tasks
 
@@ -136,7 +136,7 @@ You should see 87 tests and 11 failures, all in `LabelsTest`, `ReviewsTest` and 
 Full suite of the solution:
 
 ```text
-Tests run: 87, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 64, Failures: 0, Errors: 0, Skipped: 0
 ```
 
 ## 💼 In real projects

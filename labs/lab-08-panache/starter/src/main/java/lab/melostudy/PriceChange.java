@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +17,9 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "price_change")
-@Schema(description = "A recorded change of a product price")
 public class PriceChange extends PanacheEntity {
 
     @Column(nullable = false)
-    @Schema(description = "The product whose price changed", example = "1")
     public Long productId;
 
     @Column(nullable = false, precision = 9, scale = 2)

@@ -10,14 +10,12 @@ import static org.hamcrest.Matchers.hasSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 
 /** Lab 09, task 1: MANY-TO-MANY between products and labels. */
 @QuarkusTest
-@QuarkusTestResource(RatesStubResource.class)
 class LabelsTest {
 
     @Inject

@@ -9,14 +9,12 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 
 /** Lab 10, tasks 2-3: an order is one unit of work, and the audit trail survives a rollback. */
 @QuarkusTest
-@QuarkusTestResource(RatesStubResource.class)
 class OrderTest {
 
     @Inject

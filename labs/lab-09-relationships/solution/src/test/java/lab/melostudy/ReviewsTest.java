@@ -11,14 +11,12 @@ import static org.hamcrest.Matchers.not;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 
 /** Lab 09, tasks 2-3: ONE-TO-MANY reviews of a product, in two kinds (inheritance). */
 @QuarkusTest
-@QuarkusTestResource(RatesStubResource.class)
 class ReviewsTest {
 
     private static final String CUSTOMER = "{\"type\":\"CUSTOMER\",\"rating\":5,\"comment\":\"Great\",\"verifiedPurchase\":true}";

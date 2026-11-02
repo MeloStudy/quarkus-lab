@@ -65,25 +65,6 @@ public class ErrorMappers {
         return json(402, ApiError.of("PAYMENT_REFUSED", e.getMessage()));
     }
 
-    @ServerExceptionMapper
-    public RestResponse<ApiError> unknownCurrency(UnknownCurrencyException e) {
-        return json(400, ApiError.of("UNSUPPORTED_CURRENCY", e.getMessage()));
-    }
-
-    /** Our dependency failed: 502 Bad Gateway. The cause stays in the log, never in the body. */
-    @ServerExceptionMapper
-    public RestResponse<ApiError> ratesUnavailable(RatesUnavailableException e) {
-        LOG.warn("Rates service unavailable: " + e.getMessage(), e.getCause());
-        return json(502, ApiError.of("UPSTREAM_ERROR", "A service this API depends on is not available"));
-    }
-
-    /** Our dependency was too slow: 504 Gateway Timeout. */
-    @ServerExceptionMapper
-    public RestResponse<ApiError> ratesTimeout(RatesTimeoutException e) {
-        LOG.warn(e.getMessage());
-        return json(504, ApiError.of("UPSTREAM_TIMEOUT", "A service this API depends on did not answer in time"));
-    }
-
     /** Keeps the status of 404, 405, 406, 415... and only changes the body. */
     @ServerExceptionMapper
     public RestResponse<ApiError> http(WebApplicationException e) {

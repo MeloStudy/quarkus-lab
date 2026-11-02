@@ -112,8 +112,16 @@ Lessons from labs 01-06 (apply them from the start):
 - **Dev/test and prod differ.** In dev/test an unhandled 500 returns a JSON with the stack trace; in the packaged jar it is a generic body with an error id. Swagger UI and Dev UI exist only in dev/test. Always check the jar for anything about error bodies or exposure.
 - **Test-only classes are part of the app in tests** (for example a test resource shows up in the OpenAPI document); keep assertions scoped to the paths under study.
 - **Order of checks in domain code matters** (existence before uniqueness gave 404 vs 409 bugs). Tests should cover the unhappy order.
-- **Regression guards:** later labs carry the earlier labs' tests, so they must stay green.
+- **Regression guards:** a lab that continues the previous domain (REST, validation, persistence) carries the tests of that domain, so they must stay green. A lab that starts from a minimal app has none.
 - **Shell tips:** in the Bash tool, write long multi-line files with the file-writing tool, not heredocs; avoid `rm` with shell variables (the safety check blocks it); use PowerShell for `mvnw.cmd` runs and parsing `target/surefire-reports/*.xml`.
+
+Lessons from labs 07-10 (apply them from the start):
+- **Every trap in a README is a verified fact:** break the solution on purpose in a scratch copy (remove `rollbackOn`, the lock, `mappedBy`, ...), run the test, and quote what really happened. A first guess about what would fail was wrong more than once.
+- **Starters hide the mapping, not the app:** replace the code under study by a `@Transient` field or a `TODO` method so the starter compiles and boots. Then copy only the first task's solution into a scratch copy and check that the later tasks turn red (tasks that appear only after an earlier one is solved are fine, as long as you saw them fail).
+- **Test helpers must survive a starter:** `TestData` asks `information_schema` which tables exist before truncating them, otherwise every test fails for the wrong reason in a starter that has fewer tables.
+- **Concurrency tests:** threads + `CountDownLatch`, assert exact counts, and run them 5 times before trusting them.
+- **Only the topic in the starter:** do not carry layers that belong to other labs (see "Starting point of a lab" below). A topic lab that boots a stub server for an unrelated REST Client is noise.
+- **Cross references between READMEs** (`lab NN`) follow the syllabus numbering; `grep -rn "lab [0-9]"` after any renumbering.
 
 ## Documentation sources and safety
 - **Trusted sources, in order:** (1) the real artifacts of the project's version (`javap`, sources JAR), (2) the official guides at `https://quarkus.io/guides/` and the official sites of the libraries involved, (3) Context7 limited to official libraries with High source reputation (for Quarkus: `/websites/quarkus_io_guides`). Blogs, forums and AI-generated summaries are hints at most, never evidence.

@@ -8,14 +8,12 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 
 /** Lab 09, task 4: listing products with their labels must not cost one query per product (the N+1 problem). */
 @QuarkusTest
-@QuarkusTestResource(RatesStubResource.class)
 class FetchingTest {
 
     @Inject

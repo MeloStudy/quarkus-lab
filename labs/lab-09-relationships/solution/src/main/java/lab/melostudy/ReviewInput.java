@@ -1,7 +1,5 @@
 package lab.melostudy;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -11,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /** What the API accepts when adding a review. The {@code type} property picks the concrete record. */
-@Schema(description = "Data needed to add a review; 'type' is CUSTOMER or CRITIC")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ReviewInput.Customer.class, name = "CUSTOMER"),

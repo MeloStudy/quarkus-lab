@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,33 +34,26 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "product")
-@Schema(name = "Product", description = "A product of the catalog")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Server-assigned identifier", example = "6")
     public Long id;
 
     @Column(nullable = false, length = 100)
-    @Schema(description = "Unique product name", example = "Refactoring")
     public String name;
 
     @Column(nullable = false)
-    @Schema(description = "Product category", example = "books")
     public String category;
 
     @Column(nullable = false, precision = 9, scale = 2)
-    @Schema(description = "Unit price", example = "42.5")
     public BigDecimal price;
 
     @Column(nullable = false)
-    @Schema(description = "Units in stock; changed by orders, not by PUT /products/{id}", example = "10")
     public int stock;
 
     @Column(name = "name_key", nullable = false, unique = true, length = 100)
     @JsonIgnore
-    @Schema(hidden = true)
     public String nameKey;
 
     /** MANY-TO-MANY, owning side: the join table {@code product_label} is declared here. */
@@ -71,13 +62,11 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     @JsonIgnore
-    @Schema(hidden = true)
     public Set<Label> labels = new HashSet<>();
 
     /** ONE-TO-MANY, inverse side: the foreign key is in {@code review.product_id}, hence {@code mappedBy}. */
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    @Schema(hidden = true)
     public List<Review> reviews = new ArrayList<>();
 
     public Product() {
@@ -91,7 +80,6 @@ public class Product {
 
     /** The API shows labels as plain names, sorted. Reading {@link #labels} here is what loads them. */
     @JsonProperty("labels")
-    @Schema(name = "labels", description = "Labels attached to the product, sorted", example = "[\"classic\", \"sale\"]")
     public List<String> labelNames() {
         return labels.stream().map(l -> l.name).sorted(Comparator.naturalOrder()).toList();
     }

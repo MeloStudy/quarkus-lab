@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 
 /**
  * A label shared by many products (a product has many labels, a label has many products).
- * Named {@code Label} rather than {@code Tag} so it does not clash with the OpenAPI {@code @Tag} annotation.
  * The owning side of the relationship is {@link Product#labels}; this entity does not know its products.
  */
 @Entity

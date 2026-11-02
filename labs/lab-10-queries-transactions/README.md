@@ -82,7 +82,7 @@ Run the tests once before touching anything:
 ./mvnw test
 ```
 
-You should see 101 tests and 8 failures, in `SearchAndReportTest`, `OrderTest` and `ConcurrentOrdersTest`.
+You should see 78 tests and 8 failures, in `SearchAndReportTest`, `OrderTest` and `ConcurrentOrdersTest`.
 
 ## ✅ Tasks
 
@@ -131,7 +131,7 @@ You should see 101 tests and 8 failures, in `SearchAndReportTest`, `OrderTest` a
 Full suite of the solution:
 
 ```text
-Tests run: 101, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 78, Failures: 0, Errors: 0, Skipped: 0
 ```
 
 ## 💼 In real projects
