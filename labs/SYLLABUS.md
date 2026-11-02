@@ -27,7 +27,7 @@
 | [04](lab-04-quarkus-rest/README.md) | Quarkus REST | Resources, JSON, status codes, `Location`, parameters, paging, response filters, resource lifecycle | 🟨 |
 | [05](lab-05-validation-errors/README.md) | Validation and errors | Hibernate Validator, custom constraints, `@ServerExceptionMapper`, one error contract, catch-all without leaks | 🟨 |
 | [06](lab-06-openapi/README.md) | OpenAPI | Generated document, annotations, reusable error responses, `OASFilter`, Swagger UI vs production | 🟨 |
-| 07 | REST Client | Consuming another API with `@RegisterRestClient` | ⬜ |
+| [07](lab-07-rest-client/README.md) | REST Client | `@RegisterRestClient(configKey)`, URL and timeouts per profile, translating remote failures (404, 5xx, timeout, garbage, down) into the `ApiError` contract, testing against a stub server | 🟨 |
 
 ## Block 3 - Persistence
 | Lab | Topic | What is practiced | Status |
@@ -81,7 +81,6 @@
 | 30 | Capstone project | A complete service from scratch: REST + persistence + security + resilience + observability + container + CI, with a production checklist | ⬜ |
 
 ## Notes for the next labs
-- **Lab 07 (REST Client):** consume an API without depending on the internet. Use the lab's own product API as the remote service, or a stub (check first that the stub library is managed by the Quarkus BOM). Cover `@RegisterRestClient(configKey = ...)`, URL and timeouts in configuration per profile, mapping remote errors to the `ApiError` contract of lab 05, and testing the client. Link back to lab 02 (config) and lab 05 (errors).
 - **Lab 08 (Panache):** replaces the in-memory `ProductRepository` of labs 04-06 with a real database via Dev Services; uniqueness of names becomes a database constraint (lab 05 said so).
 - Labs 09 and 10 continue the same domain (relationships, queries, transactions).
 
