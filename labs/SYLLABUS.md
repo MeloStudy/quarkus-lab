@@ -2,7 +2,11 @@
 
 **Stack:** Quarkus 3.40.1.1 (LTS, soporte hasta 30-09-2027) · Java 21 · Maven
 **Quarkus 4:** aún en beta (4.0.0.Beta2); se evaluará cuando sea estable y LTS.
-**Formato:** labs cortos (1-2 h), cada uno con `starter/` (con TODOs y tests fallando) y `solution/`.
+**Formato:** labs cortos (1-2 h). Dos tipos según el tema:
+- **Tipo A (starter + solution):** código con comportamiento verificable por tests. `starter/` tiene TODOs y tests fallando; `solution/` es la referencia.
+- **Tipo B (guía):** temas operativos o exploratorios (contenedores, native, Kubernetes, observabilidad). Un solo proyecto y una guía paso a paso con comandos y "qué deberías ver"; sin solución separada.
+
+**Primer lote (labs 01-05):** 01 proyecto y dev mode · 02 configuración · 03 CDI · 04 Quarkus REST · 05 validación y errores.
 **Estado:** ⬜ pendiente · 🟨 en curso · ✅ terminado
 
 > Borrador. El orden y los temas se ajustan según cómo vayan saliendo los labs.
@@ -21,15 +25,15 @@
 | 05 | Validación y errores | Hibernate Validator, `ExceptionMapper`, respuestas de error consistentes | ⬜ |
 | 06 | OpenAPI | Documentar la API, Swagger UI | ⬜ |
 | 07 | REST Client | Consumir otra API con `@RegisterRestClient` | ⬜ |
-| 08 | DTOs y MapStruct | Separar entidad y DTO, mapeo con MapStruct (`componentModel = cdi`) | ⬜ |
 
 ## Bloque 3 - Persistencia
 | Lab | Tema | Qué se practica | Estado |
 |-----|------|-----------------|--------|
-| 09 | Hibernate ORM con Panache | Active record vs repository, Dev Services | ⬜ |
-| 10 | Relaciones y herencia | `@OneToMany`, `@ManyToMany`, estrategias de herencia | ⬜ |
-| 11 | Consultas y transacciones | Paginación, queries, `@Transactional` | ⬜ |
-| 12 | Migraciones | Flyway | ⬜ |
+| 08 | Hibernate ORM con Panache | Active record vs repository, Dev Services (introducción) | ⬜ |
+| 09 | Relaciones y herencia | `@OneToMany`, `@ManyToMany`, estrategias de herencia | ⬜ |
+| 10 | Consultas y transacciones | Paginación, queries, `@Transactional` | ⬜ |
+| 11 | Migraciones | Flyway | ⬜ |
+| 12 | DTOs y MapStruct | Separar entidad y DTO, mapeo con MapStruct (`componentModel = cdi`) | ⬜ |
 | 13 | Caché y tareas programadas | `quarkus-cache`, `@Scheduled` | ⬜ |
 
 ## Bloque 4 - Testing

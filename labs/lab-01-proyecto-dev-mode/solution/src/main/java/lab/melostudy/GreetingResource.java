@@ -12,7 +12,7 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        return "Hola desde Quarkus 3.40";
+        return "Hola desde Quarkus";
     }
 
     @GET

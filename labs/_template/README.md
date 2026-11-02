@@ -1,6 +1,6 @@
 # Lab NN - Título
 
-**Duración estimada:** 1-2 h · **Quarkus:** 3.40.1.1 LTS · **Java:** 21
+**Duración estimada:** 1-2 h · **Quarkus:** 3.40.1.1 LTS · **Java:** 21 · **Tipo:** A | B
 
 ## Por qué importa
 Problema real que resuelve este tema (2-3 líneas).
