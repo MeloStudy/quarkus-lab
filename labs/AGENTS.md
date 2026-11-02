@@ -81,7 +81,7 @@ READMEs are learning material; they must be easy to scan and follow.
 2. Consult the current docs (`https://quarkus.io/guides/`, latest version; cross-check with 3.40.1.1 if in doubt) and link the exact guides; do not write APIs from memory.
 3. Prefer current extensions and APIs (Quarkus REST, not RESTEasy Classic).
    - **Never write an API signature from memory.** Before using a class, annotation or method you are not sure about, inspect the real artifact of the project's version: list the JAR contents and read the signature, for example `javap -cp <jar> <fully.qualified.Class>` (jars live in `~/.m2/repository`; `mvn dependency:build-classpath` prints the exact ones), or use the sources JAR (`mvn dependency:sources`) if available.
-   - If a documentation MCP server (for example Context7) is connected, use it to fetch the docs of the exact library version, and still verify behavior by running it.
+   - If the Context7 MCP server is connected, use it for **concepts and usage examples**: resolve `Quarkus` and query `/websites/quarkus_io_guides` (the current guides, not pinned to a version; versioned Quarkus IDs only went up to 3.31 when last checked). It answers "where does this annotation go / how is this feature configured" well, but it does not give exact signatures (generics, overloads): for those use `javap` as above. Neither replaces running the code.
 4. Update the status in `SYLLABUS.md`.
 5. One commit per lab: `feat(lab_N): <description>`.
 6. Push policy: commit locally as you go, and `git push` only at milestones (a lab that meets the definition of done, or a finished block) or when the user asks. Never push work in progress.
