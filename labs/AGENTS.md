@@ -2,7 +2,19 @@
 
 This file is the single source of instructions for any AI agent (`AGENTS.md` format). `CLAUDE.md` only imports it; do not duplicate content there.
 
-These rules apply to all work inside this folder. Do not touch `00-*`, `01-*`, `02-*` or `03-microservices` unless explicitly asked.
+These rules apply to all work inside this folder. Do not touch `00-*`, `01-*`, `02-*` or `03-microservices` unless explicitly asked. (Decided on purpose: the closed course projects keep even their non-executable `mvnw` mode; nobody will run them on Linux.)
+
+## Start here (fresh session)
+1. Read this file and `SYLLABUS.md` (status of every lab, the batches, notes for the next lab).
+2. Run `git log --oneline -15` and `git status` to see where the work stands.
+3. Build the next lab that is still ⬜ in the syllabus, following "When building a lab" and the quality standard below. Do not ask which one: the syllabus order is the plan.
+
+## Working agreement with the learner
+- **Chat in Spanish; repository content in English.**
+- **Decide and recommend; do not hand decisions back.** When there is a real choice that is the learner's (scope, closed projects, anything outward-facing), present a short comparison with a clear recommendation and its reasoning, then wait. Never ask for things that are the agent's job (lab approach, quality, verification).
+- **Be honest about errors.** If something went wrong, say what, whether it is fixed, and what changed to prevent it. Report outcomes faithfully (what passed, what failed).
+- **The learner solves the labs on their own** and reviews them in batches: batch 1 = labs 01-05, batch 2 = labs 06-10. Until the learner gives feedback, labs stay 🟨 and later batches are adjusted from the feedback.
+- **Git:** commit locally as you go; push only at milestones or on request (see the push policy below).
 
 ## Context
 - The user is a developer who will use Quarkus in a new job. Goal: learn by doing, with current versions.
@@ -87,6 +99,19 @@ READMEs are learning material; they must be easy to scan and follow.
 6. Push policy: commit locally as you go, and `git push` only at milestones (a lab that meets the definition of done, or a finished block) or when the user asks. Never push work in progress.
 7. Secrets and `.env` files are never committed.
 8. Do not rewrite code files with PowerShell 5.1 `Set-Content -Encoding utf8` (it adds a BOM); use the edit tool or `sed`.
+
+## Workflow and lessons learned
+Workflow per lab: design the topic and its traps -> explore real behavior in a scratch copy (scratchpad, never the repo) -> write `solution` -> derive `starter` (remove the solution, add TODOs) -> write tests -> write the README with only verified claims -> `labs/verify.ps1 -Lab <folder>` -> commit -> push.
+
+Lessons from labs 01-06 (apply them from the start):
+- **A starter test that passes for the wrong reason is a bug.** A "404 for an unknown id" test passes vacuously when the route does not exist. Make such tests first prove the route works (a known id returns 200), so the starter fails where it should.
+- **`@QuarkusTest`: a static `@BeforeAll` runs before Quarkus starts.** Fetch lazily instead.
+- **Do not compare validation or error message text in tests.** Messages follow the JVM locale; pin `quarkus.default-locale=en` in the app and assert codes, fields and status.
+- **Dev/test and prod differ.** In dev/test an unhandled 500 returns a JSON with the stack trace; in the packaged jar it is a generic body with an error id. Swagger UI and Dev UI exist only in dev/test. Always check the jar for anything about error bodies or exposure.
+- **Test-only classes are part of the app in tests** (for example a test resource shows up in the OpenAPI document); keep assertions scoped to the paths under study.
+- **Order of checks in domain code matters** (existence before uniqueness gave 404 vs 409 bugs). Tests should cover the unhappy order.
+- **Regression guards:** later labs carry the earlier labs' tests, so they must stay green.
+- **Shell tips:** in the Bash tool, write long multi-line files with the file-writing tool, not heredocs; avoid `rm` with shell variables (the safety check blocks it); use PowerShell for `mvnw.cmd` runs and parsing `target/surefire-reports/*.xml`.
 
 ## Documentation sources and safety
 - **Trusted sources, in order:** (1) the real artifacts of the project's version (`javap`, sources JAR), (2) the official guides at `https://quarkus.io/guides/` and the official sites of the libraries involved, (3) Context7 limited to official libraries with High source reputation (for Quarkus: `/websites/quarkus_io_guides`). Blogs, forums and AI-generated summaries are hints at most, never evidence.
