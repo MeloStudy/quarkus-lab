@@ -16,7 +16,7 @@ class GreetingResourceTest {
           .when().get("/hello")
           .then()
              .statusCode(200)
-             .body(is("Hola desde Quarkus 3.39"));
+             .body(is("Hola desde Quarkus 3.40"));
     }
 
     // Tarea 2: nuevo endpoint GET /hello/{name}

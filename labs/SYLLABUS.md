@@ -1,6 +1,7 @@
 # Sílabo - Quarkus práctico y actualizado
 
-**Stack:** Quarkus 3.39.5 · Java 21 · Maven
+**Stack:** Quarkus 3.40.1.1 (LTS, soporte hasta 30-09-2027) · Java 21 · Maven
+**Quarkus 4:** aún en beta (4.0.0.Beta2); se evaluará cuando sea estable y LTS.
 **Formato:** labs cortos (1-2 h), cada uno con `starter/` (con TODOs y tests fallando) y `solution/`.
 **Estado:** ⬜ pendiente · 🟨 en curso · ✅ terminado
 

@@ -1,6 +1,6 @@
 # Lab 01 - Proyecto y dev mode
 
-**Duración estimada:** 1 h · **Quarkus:** 3.39.5 · **Java:** 21
+**Duración estimada:** 1 h · **Quarkus:** 3.40.1.1 LTS · **Java:** 21
 
 ## Por qué importa
 El ciclo de trabajo diario en Quarkus gira en torno al **dev mode**: editas, guardas, refrescas y ves el cambio sin reiniciar nada. Dominarlo, junto con el **Dev UI** y la gestión de extensiones, es la base de todo lo demás.
@@ -19,7 +19,7 @@ El ciclo de trabajo diario en Quarkus gira en torno al **dev mode**: editas, gua
 - [Quarkus CLI](https://quarkus.io/guides/cli-tooling)
 - [Dev UI](https://quarkus.io/guides/dev-ui)
 
-> Nota: las guías públicas muestran la última versión (hoy 3.40). Tu proyecto usa 3.39.5; para estos temas no hay diferencias relevantes.
+> Nota: las guías públicas muestran la última versión (hoy 3.40). Tu proyecto usa 3.40.1.1 (LTS), así que coincide con las guías.
 
 ## Escenario
 `starter/` es un proyecto recién generado (extensión `rest`) con un solo endpoint `GET /hello`. Hay tres tests que fallan; tu trabajo es dejarlos en verde **trabajando en dev mode**, no en un ciclo de compilar-ejecutar.
@@ -29,7 +29,7 @@ El ciclo de trabajo diario en Quarkus gira en torno al **dev mode**: editas, gua
    - PowerShell: `.\mvnw.cmd quarkus:dev` (o `quarkus dev` si tienes la CLI)
    - Con Git Bash, `./mvnw` puede fallar por `JAVA_HOME`; usa PowerShell o `mvn quarkus:dev`.
 2. [ ] Abre `http://localhost:8080/hello` y el Dev UI. Explora qué extensiones y qué información muestra.
-3. [ ] **Tarea 1:** con la app corriendo, cambia el texto de `GET /hello` a `Hola desde Quarkus 3.39`. Refresca el navegador sin reiniciar.
+3. [ ] **Tarea 1:** con la app corriendo, cambia el texto de `GET /hello` a `Hola desde Quarkus 3.40`. Refresca el navegador sin reiniciar.
 4. [ ] **Tarea 2:** crea el endpoint `GET /hello/{name}` que responda `Hola, {name}!`.
 5. [ ] **Tarea 3:** agrega la extensión `smallrye-health` **sin editar el `pom.xml` a mano**. Comprueba que `/q/health` responde `UP`.
 6. [ ] En la consola de dev mode pulsa `r` para ejecutar los tests de forma continua y observa cómo pasan a verde.

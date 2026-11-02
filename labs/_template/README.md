@@ -1,6 +1,6 @@
 # Lab NN - Título
 
-**Duración estimada:** 1-2 h · **Quarkus:** 3.39.5 · **Java:** 21
+**Duración estimada:** 1-2 h · **Quarkus:** 3.40.1.1 LTS · **Java:** 21
 
 ## Por qué importa
 Problema real que resuelve este tema (2-3 líneas).
@@ -10,7 +10,7 @@ Problema real que resuelve este tema (2-3 líneas).
 - Concepto 2
 
 ## Documentación
-- [Guía oficial](https://quarkus.io/version/3.39/guides/) _(enlace específico del tema)_
+- [Guía oficial](https://quarkus.io/guides/) _(enlace específico del tema)_
 
 ## Escenario
 Qué hay en `starter/` y qué se espera lograr.

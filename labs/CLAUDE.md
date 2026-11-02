@@ -6,7 +6,7 @@ Aplican a todo el trabajo dentro de esta carpeta. No tocar `00-*`, `01-*`, `02-*
 - El usuario es desarrollador que usará Quarkus en un trabajo nuevo. Objetivo: aprender de forma práctica, con versiones actuales.
 - Repite temas ya vistos a propósito: es una revisión actualizada, no se salta nada.
 - Idioma: español; términos técnicos en inglés.
-- Stack de referencia: Quarkus 3.39.5, Java 21, Maven wrapper (`./mvnw`).
+- Stack de referencia: Quarkus 3.40.1.1 (LTS, soporte hasta 30-09-2027), Java 21, Maven wrapper (`./mvnw`).
 
 ## Estructura de cada lab
 ```
@@ -22,7 +22,7 @@ labs/lab-NN-<tema>/
 
 ## Al construir un lab
 1. Construir **un lab a la vez**, no varios por adelantado.
-2. Consultar la documentación de la versión actual (`https://quarkus.io/guides/` (última versión; contrastar con la 3.39.5 del proyecto si hay dudas)) y enlazar las guías exactas; no escribir de memoria APIs que hayan cambiado.
+2. Consultar la documentación de la versión actual (`https://quarkus.io/guides/` (última versión; contrastar con la 3.40.1.1 del proyecto si hay dudas)) y enlazar las guías exactas; no escribir de memoria APIs que hayan cambiado.
 3. Preferir las extensiones y APIs vigentes (Quarkus REST, no RESTEasy Classic).
 4. Actualizar el estado en `SYLLABUS.md`.
 5. Un commit por lab: `feat(lab_N): <descripción>`.
