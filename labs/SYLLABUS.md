@@ -51,7 +51,7 @@
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
 | [14](lab-14-json/README.md) | JSON in depth | A reservations API contract: snake_case names, ISO `LocalDate`/`Instant`, enum codes with `@JsonValue`, strict input (unknown properties, datetime for a date), polymorphic payments with `Id.NAME` (and why not `Id.CLASS`), a custom `Money` (de)serializer registered with `ObjectMapperCustomizer` | Owns serialization | Minimal app (in memory, no database) | 🟨 |
-| 15 | HTTP for production | CORS, ETag and `If-Match` / `If-None-Match` (optimistic concurrency over HTTP), file upload and download, API versioning | Builds on 10 (optimistic locking was a stretch there) | Minimal app with `@Version` entity | ⬜ |
+| [15](lab-15-http/README.md) | HTTP for production | `ETag` + `If-None-Match` (304), `If-Match` over `@Version` (412, 428, the race and its mapper), CORS (origins, exposed headers, preflight), multipart upload and download (generated names, allow-listed types, size limit, the `@Produces` wildcard trap), v1/v2 side by side with `Deprecation` and `Sunset` | Builds on 10 (optimistic locking was a stretch there) | Minimal app with a `@Version` entity (Dev Services) | 🟨 |
 
 ## Block 5 - Testing
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
@@ -102,7 +102,7 @@
 | **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist | Uses everything | Empty project | ⬜ |
 
 ## Notes for the next labs
-- **Lab 15 (HTTP for production):** minimal app with a `@Version` entity (needs a database, so Dev Services/Docker). Lab 14 left the JSON contract strict (`fail-on-unknown-properties=true`, snake_case): decide in lab 15 whether that applies to its small app. Entities are separate from the API since lab 12; schema changes always go through a Flyway migration (lab 11).
+- **Block 4 (REST for production) is now fully built (labs 14-15).** Next block: testing, lab 16 (`@QuarkusTest`, a minimal app). Tests in labs 11-15 already use `@QuarkusTest`, RestAssured, raw-JSON bodies and a `TestSupport`/`TestData` helper; lab 16 owns mocking (`@InjectMock`) and test speed. Schema changes always go through a Flyway migration (lab 11); lab 15 generates the schema with Hibernate only because it is a minimal app.
 - **Projects (P1, P2, P3):** the first one needs a written specification and an acceptance test suite that is visible but has no hints. Decide the domain when the block before it is finished.
 - **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
