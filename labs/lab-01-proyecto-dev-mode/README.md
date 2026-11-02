@@ -50,7 +50,7 @@ El ciclo de trabajo diario en Quarkus gira en torno al **dev mode**: editas, gua
 
 ## En proyectos reales
 - **El dev mode es solo para desarrollar:** nunca se despliega. En el jar el perfil es `prod`, y el Dev UI (`/q/dev-ui/`) no existe (responde 404), pero `/q/health` sí.
-- **Se despliega la carpeta `target/quarkus-app/` completa** (`quarkus-run.jar` más `lib/`, `app/` y `quarkus/`), no solo el `.jar` ejecutable. Normalmente la copia una imagen de contenedor (lab 25).
+- **Se despliega la carpeta `target/quarkus-app/` completa** (`quarkus-run.jar` más `lib/`, `app/` y `quarkus/`), no solo el `.jar` ejecutable. Normalmente la copia una imagen de contenedor (lab 26).
 - **Los endpoints de health son los probes del orquestador:** en Kubernetes, `/q/health/live` y `/q/health/ready` suelen ser los *liveness* y *readiness probes*.
 - **No fijes versiones de extensiones a mano:** el `pom.xml` importa un BOM de la plataforma que las gestiona. Actualizar Quarkus es cambiar una sola versión (`quarkus.platform.version`).
 - **Usa el wrapper (`mvnw`)** para que todo el equipo y CI compilen con la misma versión de Maven.
