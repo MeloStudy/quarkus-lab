@@ -32,6 +32,17 @@ labs/lab-NN-<tema>/
 - En Git Bash `./mvnw` puede fallar por `JAVA_HOME`: verificar con `mvn` del sistema o `.\mvnw.cmd` en PowerShell, e indicar ambos en el README.
 - La carpeta `solution/` es visible a propósito: el usuario decide cuándo mirarla.
 
+## Estándar de calidad (criterio propio, no preguntar al usuario)
+Yo, Claude, decido y valido el enfoque de cada lab; no se lo devuelvo al usuario como pregunta. Un lab no está terminado hasta cumplir:
+1. **Nivel laboral:** cubre lo que se espera en un proyecto real y en una entrevista, no solo el mecanismo. Incluye cómo corre fuera del dev mode (jar/contenedor) cuando aplique, los errores típicos y qué haría un equipo en producción.
+2. **Trampas explícitas:** al menos una situación donde lo intuitivo falla (precedencia, build-time vs runtime, prefijos, orden de arranque...), descubierta por el alumno y explicada después.
+3. **Lo no obvio se verifica ejecutando**, no se afirma de memoria: toda respuesta, mensaje de error o comportamiento citado en el README debe haberse comprobado con la versión del proyecto.
+4. **Predecir antes de ejecutar:** las exploraciones piden anotar una predicción antes de ver el resultado.
+5. **Directo y corto:** 1-2 h; si crece más, separar el tema en dos labs en vez de inflarlo. Lo opcional va en "Reto extra".
+6. **Sección "En proyectos reales"** (criterio profesional, seguridad, operación) y **"Autoevaluación"** (5 preguntas a nivel entrevista) en cada README.
+7. **Comandos probados** en PowerShell (`.\mvnw.cmd`); en PowerShell los argumentos `-Dx.y=z` van entre comillas.
+8. Tras cualquier cambio, volver a ejecutar `solution` (verde) y `starter` (rojo donde debe).
+
 ## Al construir un lab
 1. Construir **un lab a la vez**, no varios por adelantado.
 2. Consultar la documentación de la versión actual (`https://quarkus.io/guides/` (última versión; contrastar con la 3.40.1.1 del proyecto si hay dudas)) y enlazar las guías exactas; no escribir de memoria APIs que hayan cambiado.

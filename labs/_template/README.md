@@ -20,7 +20,11 @@ Qué hay en `starter/` y qué se espera lograr.
 2. [ ] Tarea 2
 3. [ ] Tarea 3
 
-**Criterio de éxito:** `./mvnw verify` en `starter/` termina en verde.
+**Criterio de éxito:** `mvn verify` (o `.\mvnw.cmd verify` en PowerShell) en `starter/` termina en verde.
+
+## En proyectos reales
+- Criterio profesional, seguridad, operación, errores típicos del equipo.
+- Cómo se despliega o configura esto fuera del dev mode.
 
 ## Reto extra
 Algo sin pistas para ir más allá.
@@ -35,6 +39,9 @@ Algo sin pistas para ir más allá.
 
 ...
 </details>
+
+## Autoevaluación
+Cinco preguntas a nivel entrevista, para responder sin mirar el código.
 
 La solución completa está en `../solution/`.
 

@@ -2,6 +2,8 @@ package lab.melostudy;
 
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,8 @@ public interface AppConfig {
     Contact contact();
 
     interface Contact {
+        @NotBlank
+        @Email
         String email();
 
         Optional<String> phone();

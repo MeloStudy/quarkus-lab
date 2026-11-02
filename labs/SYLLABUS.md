@@ -15,7 +15,7 @@
 | Lab | Tema | Qué se practica | Estado |
 |-----|------|-----------------|--------|
 | 01 | Proyecto y dev mode | Estructura, live coding, Dev UI, extensiones, `quarkus` CLI | 🟨 |
-| 02 | Configuración y perfiles | `@ConfigProperty`, `@ConfigMapping`, perfiles, variables de entorno | 🟨 |
+| 02 | Configuración y perfiles | `@ConfigProperty`, `@ConfigMapping`, perfiles, precedencia, validación fail-fast, jar y build-time vs runtime | 🟨 |
 | 03 | CDI | Scopes, qualifiers, producers, interceptors, eventos | ⬜ |
 
 ## Bloque 2 - REST
@@ -46,29 +46,36 @@
 ## Bloque 5 - Reactivo y comunicación
 | Lab | Tema | Qué se practica | Estado |
 |-----|------|-----------------|--------|
-| 17 | Mutiny | `Uni`, `Multi`, composición, errores | ⬜ |
-| 18 | Mensajería reactiva | SmallRye Reactive Messaging (in-memory, luego Kafka) | ⬜ |
-| 19 | gRPC | Definir `.proto`, servidor y cliente gRPC, streaming | ⬜ |
+| 17 | Modelo de ejecución | Event loop vs worker threads, `@Blocking`/`@NonBlocking`, virtual threads (`@RunOnVirtualThread`) | ⬜ |
+| 18 | Mutiny | `Uni`, `Multi`, composición, errores | ⬜ |
+| 19 | Mensajería reactiva | SmallRye Reactive Messaging (in-memory, luego Kafka) | ⬜ |
+| 20 | gRPC | Definir `.proto`, servidor y cliente gRPC, streaming | ⬜ |
 
 ## Bloque 6 - Seguridad
 | Lab | Tema | Qué se practica | Estado |
 |-----|------|-----------------|--------|
-| 20 | Autenticación y roles | Basic, `@RolesAllowed`, identidad en tests | ⬜ |
-| 21 | JWT y OIDC | SmallRye JWT, Keycloak con Dev Services | ⬜ |
+| 21 | Autenticación y roles | Basic, `@RolesAllowed`, identidad en tests | ⬜ |
+| 22 | JWT y OIDC | SmallRye JWT, Keycloak con Dev Services | ⬜ |
 
 ## Bloque 7 - Resiliencia y observabilidad
 | Lab | Tema | Qué se practica | Estado |
 |-----|------|-----------------|--------|
-| 22 | Fault tolerance | Retry, timeout, circuit breaker, fallback | ⬜ |
-| 23 | Health y métricas | SmallRye Health, Micrometer | ⬜ |
-| 24 | Logging y tracing | Logging estructurado, OpenTelemetry | ⬜ |
+| 23 | Fault tolerance | Retry, timeout, circuit breaker, fallback | ⬜ |
+| 24 | Health y métricas | SmallRye Health, Micrometer | ⬜ |
+| 25 | Logging y tracing | Logging estructurado, OpenTelemetry | ⬜ |
 
 ## Bloque 8 - Entrega
 | Lab | Tema | Qué se practica | Estado |
 |-----|------|-----------------|--------|
-| 25 | Contenedores | Dockerfiles (JVM), build con Jib/Docker | ⬜ |
-| 26 | Native | GraalVM/Mandrel, limitaciones, reflexión | ⬜ |
-| 27 | Kubernetes | Extensión de Kubernetes, manifiestos generados | ⬜ |
+| 26 | Contenedores | Dockerfiles (JVM), build con Jib/Docker | ⬜ |
+| 27 | Native | GraalVM/Mandrel, limitaciones, reflexión | ⬜ |
+| 28 | Kubernetes | Extensión de Kubernetes, manifiestos generados | ⬜ |
+| 29 | CI con GitHub Actions | Pipeline: build, tests, imagen; caché de Maven | ⬜ |
+
+## Bloque 9 - Integrador
+| Lab | Tema | Qué se practica | Estado |
+|-----|------|-----------------|--------|
+| 30 | Proyecto integrador | Un servicio completo desde cero: REST + persistencia + seguridad + resiliencia + observabilidad + contenedor + CI, con checklist de producción | ⬜ |
 
 ## Ritmo
 Un lab a la vez: se construye, se resuelve, se revisa y se ajusta el siguiente según la retrospectiva.
