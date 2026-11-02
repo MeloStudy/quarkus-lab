@@ -29,6 +29,29 @@ cd labs/lab-03-cdi/starter
 ./mvnw test
 ```
 
+## 🌿 Keep your solutions off `main`
+`main` is the clean template: every `starter/` there has failing tests. Do your own work on a separate branch so `main` stays untouched and you can still receive updates.
+
+**If you are not the owner: fork it.** You cannot push to this repository, so fork it on GitHub, clone your fork and create a branch:
+
+```bash
+git clone https://github.com/<your-user>/quarkus-lab.git
+cd quarkus-lab
+git remote add upstream https://github.com/MeloStudy/quarkus-lab.git
+git checkout -b my-solutions
+```
+
+Work inside the `starter/` folders and commit as you go (for example `solve(lab_11): ...`). To receive new or corrected labs, bring `main` into your branch:
+
+```bash
+git fetch upstream
+git merge upstream/main
+```
+
+If a lab you already solved was changed upstream, Git reports a conflict in the files you edited: keep your solution, take the new tests or scaffolding from upstream, and commit the merge.
+
+**The owner** does the same with a branch in this repository (`git checkout -b solutions/<name>`) and merges with `git fetch origin` + `git merge origin/main`. To see only what changed in one starter: `git diff main..solutions/<name> -- labs/lab-NN-<topic>/starter`.
+
 ## ✅ Prerequisites
 - Java 21 (the Maven wrapper in each project downloads Maven itself).
 - PowerShell on Windows or any Bash shell. In Git Bash `./mvnw` can fail because of `JAVA_HOME`; use PowerShell with `.\mvnw.cmd`.

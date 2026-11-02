@@ -18,6 +18,11 @@ These rules apply to all work inside this folder. Do not touch `00-*`, `01-*`, `
 - **Block reminder:** when a syllabus block is finished (last lab of the block built), say so in one short message: which labs the block contains, what was verified, and invite feedback. It is a reminder, never a gate.
 - **Git:** commit locally as you go; push only at milestones or on request (see the push policy below).
 
+## Branches and the learner's solutions
+- `main` is the clean template; the agent works **only on `main`**. The learner keeps their solutions on a branch of their own (`solutions/<name>`) and merges `main` into it when labs change. Other people fork the repository (see the root `README.md`).
+- Never modify, rebase, merge into or push the learner's solutions branch unless asked. Never commit solved starters to `main`.
+- For a code review of a solved lab, read the learner's branch with `git diff main..<branch> -- labs/lab-NN-<topic>/starter`. When a lab that the learner already solved has to change, keep the change minimal (they will have to resolve a merge conflict) and say so.
+
 ## Context
 - The user is a developer who will use Quarkus in a new job. Goal: learn by doing, with current versions.
 - Topics already seen are repeated on purpose: this is an up-to-date review, nothing is skipped.
