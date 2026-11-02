@@ -1,0 +1,15 @@
+# Let git normalize text files: stored with LF, checked out with the platform's default.
+* text=auto
+
+# Scripts that must keep LF even on Windows (a CRLF mvnw breaks on Linux, macOS and WSL).
+mvnw text eol=lf
+*.sh text eol=lf
+
+# Windows scripts need CRLF.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Never touch binaries.
+*.jar binary
+*.png binary
