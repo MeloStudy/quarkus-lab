@@ -1,51 +1,88 @@
-# Lab NN - Título
+# 🧩 Lab NN - Title
 
-**Duración estimada:** 1-2 h · **Quarkus:** 3.40.1.1 LTS · **Java:** 21 · **Tipo:** A | B
+| ⏱️ Duration | 🚀 Quarkus | ☕ Java | 🧪 Type |
+|---|---|---|---|
+| 1-2 h | 3.40.1.1 LTS | 21 | A (starter + solution) / B (guide) |
 
-## Por qué importa
-Problema real que resuelve este tema (2-3 líneas).
+## 📍 Where to run commands
+Open a terminal **inside this lab's `starter/` folder** and check where you are before running anything:
 
-## Conceptos
-- Concepto 1
-- Concepto 2
+```powershell
+Get-Location
+```
 
-## Documentación
-- [Guía oficial](https://quarkus.io/guides/) _(enlace específico del tema)_
+```bash
+pwd
+```
 
-## Escenario
-Qué hay en `starter/` y qué se espera lograr.
+> [!NOTE]
+> Commands are shown in PowerShell first (`.\mvnw.cmd`) and Bash second (`./mvnw`). In Git Bash, `./mvnw` may fail because of `JAVA_HOME`; use the system `mvn` instead.
 
-## Tareas
-1. [ ] Tarea 1
-2. [ ] Tarea 2
-3. [ ] Tarea 3
+## 🎯 Why it matters
+The real problem this topic solves (2-3 lines).
 
-**Criterio de éxito:** `mvn verify` (o `.\mvnw.cmd verify` en PowerShell) en `starter/` termina en verde.
+## 🧠 Concepts
+- Concept 1
+- Concept 2
 
-## En proyectos reales
-- Criterio profesional, seguridad, operación, errores típicos del equipo.
-- Cómo se despliega o configura esto fuera del dev mode.
+## 📚 Documentation
+- [Official guide](https://quarkus.io/guides/) _(link to the specific topic)_
 
-## Reto extra
-Algo sin pistas para ir más allá.
+## 🧭 Scenario
+What is in `starter/` and what you are expected to achieve.
 
-## Pistas
-<details><summary>Pista 1 (dirección)</summary>
+## ✅ Tasks
+
+### Task 1 - Title
+**Goal:** one sentence. **Validated by:** `SomeTest`.
+
+- [ ] Step 1
+- [ ] Step 2
+
+> [!WARNING]
+> The trap of this task, without spoiling the answer.
+
+🔮 **Predict first:** question to answer before running anything.
+
+```powershell
+.\mvnw.cmd test
+```
+
+**Success criteria:** `.\mvnw.cmd verify` inside `starter/` ends green.
+
+## 👀 What you should see
+Key lines of expected output.
+
+## 💼 In real projects
+- Professional judgment, security, operations, typical team mistakes.
+- How this is configured or deployed outside dev mode.
+
+## 🚀 Stretch goal
+Something without hints to go further.
+
+## 💡 Hints
+<details><summary>Hint 1 (direction)</summary>
 
 ...
 </details>
 
-<details><summary>Pista 2 (más concreta)</summary>
+<details><summary>Hint 2 (more concrete)</summary>
 
 ...
 </details>
 
-## Autoevaluación
-Cinco preguntas a nivel entrevista, para responder sin mirar el código.
+## ✔️ Verified answers
+<details><summary>Open only after finishing the tasks</summary>
 
-La solución completa está en `../solution/`.
+Everything here was checked by running it on the lab's Quarkus version.
+</details>
 
-## Retrospectiva
-- ¿Qué entendí?
-- ¿Qué me costó?
-- ¿Qué reforzar?
+## 🎤 Self-assessment
+Five interview-level questions, to answer without looking at the code.
+
+The complete solution is in `solution/`.
+
+## 🔁 Retrospective
+- What did I understand?
+- What was hard?
+- What should I reinforce?

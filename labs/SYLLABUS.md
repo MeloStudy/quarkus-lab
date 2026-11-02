@@ -1,81 +1,83 @@
-# Sílabo - Quarkus práctico y actualizado
+# 🗺️ Syllabus - Practical, up-to-date Quarkus
 
-**Stack:** Quarkus 3.40.1.1 (LTS, soporte hasta 30-09-2027) · Java 21 · Maven
-**Quarkus 4:** aún en beta (4.0.0.Beta2); se evaluará cuando sea estable y LTS.
-**Formato:** labs cortos (1-2 h). Dos tipos según el tema:
-- **Tipo A (starter + solution):** código con comportamiento verificable por tests. `starter/` tiene TODOs y tests fallando; `solution/` es la referencia.
-- **Tipo B (guía):** temas operativos o exploratorios (contenedores, native, Kubernetes, observabilidad). Un solo proyecto y una guía paso a paso con comandos y "qué deberías ver"; sin solución separada.
+**Stack:** Quarkus 3.40.1.1 (LTS, supported until 2027-09-30) · Java 21 · Maven
+**Quarkus 4:** still in beta (4.0.0.Beta2); it will be evaluated once it is stable and LTS.
 
-**Primer lote (labs 01-05):** 01 proyecto y dev mode · 02 configuración · 03 CDI · 04 Quarkus REST · 05 validación y errores.
-**Estado:** ⬜ pendiente · 🟨 en curso · ✅ terminado
+**Format:** short labs (1-2 h). Two types depending on the topic:
+- **Type A (starter + solution):** code with behavior verifiable by tests. `starter/` has TODOs and failing tests; `solution/` is the reference.
+- **Type B (guide):** operational or exploratory topics (containers, native, Kubernetes, observability). A single project and a step-by-step guide with commands and "what you should see"; no separate solution.
 
-> Borrador. El orden y los temas se ajustan según cómo vayan saliendo los labs.
+**First batch (labs 01-05):** 01 project and dev mode · 02 configuration · 03 CDI · 04 Quarkus REST · 05 validation and errors.
 
-## Bloque 1 - Fundamentos
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 01 | Proyecto y dev mode | Estructura, live coding, Dev UI, extensiones, `quarkus` CLI | 🟨 |
-| 02 | Configuración y perfiles | `@ConfigProperty`, `@ConfigMapping`, perfiles, precedencia, validación fail-fast, jar y build-time vs runtime | 🟨 |
-| 03 | CDI | Scopes, qualifiers, producers, interceptors, eventos | 🟨 |
+**Status:** ⬜ pending · 🟨 built, waiting for the learner · ✅ done
 
-## Bloque 2 - REST
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 04 | Quarkus REST | Resources, JSON, códigos de estado, parámetros | ⬜ |
-| 05 | Validación y errores | Hibernate Validator, `ExceptionMapper`, respuestas de error consistentes | ⬜ |
-| 06 | OpenAPI | Documentar la API, Swagger UI | ⬜ |
-| 07 | REST Client | Consumir otra API con `@RegisterRestClient` | ⬜ |
+> Draft. Order and topics are adjusted according to how the labs turn out.
 
-## Bloque 3 - Persistencia
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 08 | Hibernate ORM con Panache | Active record vs repository, Dev Services (introducción) | ⬜ |
-| 09 | Relaciones y herencia | `@OneToMany`, `@ManyToMany`, estrategias de herencia | ⬜ |
-| 10 | Consultas y transacciones | Paginación, queries, `@Transactional` | ⬜ |
-| 11 | Migraciones | Flyway | ⬜ |
-| 12 | DTOs y MapStruct | Separar entidad y DTO, mapeo con MapStruct (`componentModel = cdi`) | ⬜ |
-| 13 | Caché y tareas programadas | `quarkus-cache`, `@Scheduled` | ⬜ |
+## Block 1 - Fundamentals
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| [01](lab-01-project-dev-mode/README.md) | Project and dev mode | Structure, live coding, Dev UI, extensions, `quarkus` CLI, running the jar | 🟨 |
+| [02](lab-02-configuration-profiles/README.md) | Configuration and profiles | `@ConfigProperty`, `@ConfigMapping`, profiles, precedence, fail-fast validation, jar and build-time vs runtime | 🟨 |
+| [03](lab-03-cdi/README.md) | CDI | Scopes, qualifiers, producers, interceptors, events, unused bean removal | 🟨 |
 
-## Bloque 4 - Testing
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
+## Block 2 - REST
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| 04 | Quarkus REST | Resources, JSON, status codes, parameters | ⬜ |
+| 05 | Validation and errors | Hibernate Validator, `ExceptionMapper`, consistent error responses | ⬜ |
+| 06 | OpenAPI | Documenting the API, Swagger UI | ⬜ |
+| 07 | REST Client | Consuming another API with `@RegisterRestClient` | ⬜ |
+
+## Block 3 - Persistence
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| 08 | Hibernate ORM with Panache | Active record vs repository, Dev Services (introduction) | ⬜ |
+| 09 | Relationships and inheritance | `@OneToMany`, `@ManyToMany`, inheritance strategies | ⬜ |
+| 10 | Queries and transactions | Pagination, queries, `@Transactional` | ⬜ |
+| 11 | Migrations | Flyway | ⬜ |
+| 12 | DTOs and MapStruct | Separating entity and DTO, mapping with MapStruct (`componentModel = cdi`) | ⬜ |
+| 13 | Cache and scheduled tasks | `quarkus-cache`, `@Scheduled` | ⬜ |
+
+## Block 4 - Testing
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
 | 14 | `@QuarkusTest` | RestAssured, mocks, `@InjectMock` | ⬜ |
-| 15 | Dev Services y perfiles de test | Contenedores en test, `QuarkusTestProfile` | ⬜ |
-| 16 | Pruebas de integración entre servicios | `@QuarkusIntegrationTest`, WireMock, contratos entre servicios | ⬜ |
+| 15 | Dev Services and test profiles | Containers in tests, `QuarkusTestProfile` | ⬜ |
+| 16 | Integration tests between services | `@QuarkusIntegrationTest`, WireMock, contracts between services | ⬜ |
 
-## Bloque 5 - Reactivo y comunicación
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 17 | Modelo de ejecución | Event loop vs worker threads, `@Blocking`/`@NonBlocking`, virtual threads (`@RunOnVirtualThread`) | ⬜ |
-| 18 | Mutiny | `Uni`, `Multi`, composición, errores | ⬜ |
-| 19 | Mensajería reactiva | SmallRye Reactive Messaging (in-memory, luego Kafka) | ⬜ |
-| 20 | gRPC | Definir `.proto`, servidor y cliente gRPC, streaming | ⬜ |
+## Block 5 - Reactive and communication
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| 17 | Execution model | Event loop vs worker threads, `@Blocking`/`@NonBlocking`, virtual threads (`@RunOnVirtualThread`) | ⬜ |
+| 18 | Mutiny | `Uni`, `Multi`, composition, errors | ⬜ |
+| 19 | Reactive messaging | SmallRye Reactive Messaging (in-memory, then Kafka) | ⬜ |
+| 20 | gRPC | Defining `.proto`, gRPC server and client, streaming | ⬜ |
 
-## Bloque 6 - Seguridad
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 21 | Autenticación y roles | Basic, `@RolesAllowed`, identidad en tests | ⬜ |
-| 22 | JWT y OIDC | SmallRye JWT, Keycloak con Dev Services | ⬜ |
+## Block 6 - Security
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| 21 | Authentication and roles | Basic, `@RolesAllowed`, identity in tests | ⬜ |
+| 22 | JWT and OIDC | SmallRye JWT, Keycloak with Dev Services | ⬜ |
 
-## Bloque 7 - Resiliencia y observabilidad
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
+## Block 7 - Resilience and observability
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
 | 23 | Fault tolerance | Retry, timeout, circuit breaker, fallback | ⬜ |
-| 24 | Health y métricas | SmallRye Health, Micrometer | ⬜ |
-| 25 | Logging y tracing | Logging estructurado, OpenTelemetry | ⬜ |
+| 24 | Health and metrics | SmallRye Health, Micrometer | ⬜ |
+| 25 | Logging and tracing | Structured logging, OpenTelemetry | ⬜ |
 
-## Bloque 8 - Entrega
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 26 | Contenedores | Dockerfiles (JVM), build con Jib/Docker | ⬜ |
-| 27 | Native | GraalVM/Mandrel, limitaciones, reflexión | ⬜ |
-| 28 | Kubernetes | Extensión de Kubernetes, manifiestos generados | ⬜ |
-| 29 | CI con GitHub Actions | Pipeline: build, tests, imagen; caché de Maven | ⬜ |
+## Block 8 - Delivery
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| 26 | Containers | Dockerfiles (JVM), build with Jib/Docker | ⬜ |
+| 27 | Native | GraalVM/Mandrel, limitations, reflection | ⬜ |
+| 28 | Kubernetes | Kubernetes extension, generated manifests | ⬜ |
+| 29 | CI with GitHub Actions | Pipeline: build, tests, image; Maven cache | ⬜ |
 
-## Bloque 9 - Integrador
-| Lab | Tema | Qué se practica | Estado |
-|-----|------|-----------------|--------|
-| 30 | Proyecto integrador | Un servicio completo desde cero: REST + persistencia + seguridad + resiliencia + observabilidad + contenedor + CI, con checklist de producción | ⬜ |
+## Block 9 - Capstone
+| Lab | Topic | What is practiced | Status |
+|-----|-------|-------------------|--------|
+| 30 | Capstone project | A complete service from scratch: REST + persistence + security + resilience + observability + container + CI, with a production checklist | ⬜ |
 
-## Ritmo
-Un lab a la vez: se construye, se resuelve, se revisa y se ajusta el siguiente según la retrospectiva.
+## Pace
+One lab at a time: it is built, solved, reviewed, and the next one is adjusted according to the retrospective.

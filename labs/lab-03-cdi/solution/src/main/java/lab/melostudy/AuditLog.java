@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-/** Registro de auditoría compartido por toda la aplicación. */
+/** Audit log shared by the whole application. */
 @ApplicationScoped
 public class AuditLog {
 

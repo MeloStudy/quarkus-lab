@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 
-/** Registra pedidos. */
+/** Places orders. */
 @ApplicationScoped
 public class OrderService {
 

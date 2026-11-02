@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 import jakarta.interceptor.InterceptorBinding;
 
-/** Marca los métodos (o clases) cuya invocación debe quedar en el {@link AuditLog}. */
+/** Marks the methods (or classes) whose invocation must be recorded in the {@link AuditLog}. */
 @InterceptorBinding
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })

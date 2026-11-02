@@ -5,10 +5,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jakarta.enterprise.context.Dependent;
 
 /**
- * Contador de visitas. {@code HitWriter} escribe y {@code HitReader} lee: ambos
- * deben ver el mismo contador.
+ * Hit counter. {@code HitWriter} writes and {@code HitReader} reads: both
+ * must see the same counter.
  */
-// TODO (Tarea 1): ¿es @Dependent el scope correcto para un estado compartido?
+// TODO (Task 1): is @Dependent the right scope for shared state?
 @Dependent
 public class HitCounter {
 

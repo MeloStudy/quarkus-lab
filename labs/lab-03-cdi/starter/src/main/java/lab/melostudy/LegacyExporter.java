@@ -3,7 +3,7 @@ package lab.melostudy;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Nadie lo inyecta: lo localiza otro módulo por búsqueda programática
+ * Nobody injects it: another module finds it by programmatic lookup
  * ({@code Arc.container().instance(...)}).
  */
 @ApplicationScoped

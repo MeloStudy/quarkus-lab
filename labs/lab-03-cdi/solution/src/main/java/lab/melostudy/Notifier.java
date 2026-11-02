@@ -2,6 +2,6 @@ package lab.melostudy;
 
 public interface Notifier {
 
-    /** Envía el mensaje y devuelve un acuse con el formato {@code canal:destino:mensaje}. */
+    /** Sends the message and returns an acknowledgement formatted as {@code channel:to:message}. */
     String send(String to, String message);
 }

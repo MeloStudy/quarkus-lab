@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 import jakarta.inject.Qualifier;
 
-/** Qualifier que identifica el canal de un {@link Notifier}. */
+/** Qualifier that identifies the channel of a {@link Notifier}. */
 @Qualifier
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD, FIELD, PARAMETER })

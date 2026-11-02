@@ -5,8 +5,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Contador de visitas. {@code HitWriter} escribe y {@code HitReader} lee: ambos
- * deben ver el mismo contador.
+ * Hit counter. {@code HitWriter} writes and {@code HitReader} reads: both
+ * must see the same counter.
  */
 @ApplicationScoped
 public class HitCounter {

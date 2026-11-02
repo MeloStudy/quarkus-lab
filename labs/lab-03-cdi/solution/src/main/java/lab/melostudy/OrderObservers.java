@@ -5,7 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
 
-/** Reacciones a OrderPlaced. */
+/** Reactions to OrderPlaced. */
 @ApplicationScoped
 public class OrderObservers {
 
@@ -15,7 +15,7 @@ public class OrderObservers {
         this.log = log;
     }
 
-    // Prioridad numérica menor = se ejecuta antes. Se declara primero a propósito.
+    // Lower priority number = runs earlier. Declared first on purpose.
     void shippingPrepared(@Observes @Priority(2000) OrderPlaced event) {
         log.record("shipping:" + event.order().item());
     }

@@ -8,8 +8,8 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
 /**
- * Producer del Clock de producción. {@code @DefaultBean} permite que cualquier otro bean
- * de tipo Clock (por ejemplo, uno fijo en tests) lo sustituya sin ambigüedad.
+ * Production Clock producer. {@code @DefaultBean} lets any other bean
+ * of type Clock (for example, a fixed one in tests) replace it without ambiguity.
  */
 @ApplicationScoped
 public class ClockProducer {

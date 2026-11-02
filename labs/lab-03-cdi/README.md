@@ -1,134 +1,243 @@
-# Lab 03 - CDI (inyección de dependencias)
+# 🧩 Lab 03 - CDI (dependency injection)
 
-**Duración estimada:** 2 h · **Quarkus:** 3.40.1.1 LTS · **Java:** 21 · **Tipo:** A (starter + solution)
+| ⏱️ Duration | 🚀 Quarkus | ☕ Java | 🧪 Type |
+|---|---|---|---|
+| 2 h | 3.40.1.1 LTS | 21 | A (starter + solution) |
 
-## Por qué importa
-Todo en Quarkus es un bean: resources, servicios, repositorios, clientes. Entender **scopes, qualifiers, interceptors y eventos** evita bugs de estado compartido, ambigüedades y "beans que desaparecen". Además, Quarkus resuelve la inyección **en tiempo de build** (ArC), no en ejecución: es distinto de Spring y es tema típico de entrevista.
+## 📍 Where to run commands
+Open a terminal **inside this lab's `starter/` folder** and check where you are before running anything:
 
-## Conceptos
+```powershell
+Get-Location
+```
+
+```bash
+pwd
+```
+
+> [!NOTE]
+> Commands are shown in PowerShell first (`.\mvnw.cmd`) and Bash second (`./mvnw`). In Git Bash, `./mvnw` may fail because of `JAVA_HOME`; use the system `mvn` instead.
+
+## 🎯 Why it matters
+Everything in Quarkus is a bean: resources, services, repositories, clients. Understanding **scopes, qualifiers, interceptors and events** prevents shared-state bugs, ambiguities and "disappearing beans". On top of that, Quarkus resolves injection **at build time** (ArC), not at runtime: that differs from Spring and is a classic interview topic.
+
+## 🧠 Concepts
 - Scopes: `@ApplicationScoped`, `@RequestScoped`, `@Singleton`, `@Dependent`; client proxies
-- Inyección por constructor (recomendada) y `Instance<T>` / `@Any`
-- Qualifiers (con miembros) y resolución ambigua
-- Producers y `@DefaultBean`; sustitución de beans en tests con `@Alternative` + `@Priority`
+- Constructor injection (recommended) and `Instance<T>` / `@Any`
+- Qualifiers (with members) and ambiguous resolution
+- Producers and `@DefaultBean`; replacing beans in tests with `@Alternative` + `@Priority`
 - Interceptors (`@InterceptorBinding`, `@AroundInvoke`)
-- Eventos: `Event<T>`, `@Observes`, `@ObservesAsync`, prioridad
-- Eliminación de beans sin uso y `@Unremovable`
+- Events: `Event<T>`, `@Observes`, `@ObservesAsync`, priority
+- Unused bean removal and `@Unremovable`
 
-## Documentación
-- [CDI en Quarkus (introducción)](https://quarkus.io/guides/cdi)
-- [Referencia de CDI en Quarkus (ArC)](https://quarkus.io/guides/cdi-reference)
+## 📚 Documentation
+- [CDI in Quarkus (introduction)](https://quarkus.io/guides/cdi)
+- [CDI reference for Quarkus (ArC)](https://quarkus.io/guides/cdi-reference)
 
-> Nota: las guías públicas muestran la última versión; tu proyecto usa 3.40.1.1 (LTS), que coincide.
+> [!NOTE]
+> The public guides show the latest version; your project uses 3.40.1.1 (LTS), which matches.
 
-## Escenario
-`starter/` es un pequeño sistema de pedidos: `OrderService` registra pedidos, hay notificadores por canal, contadores y un exportador. Casi todo compila y arranca, pero **11 de los 12 tests fallan**. Cada tarea arregla un grupo de tests. Trabaja desde `starter/` y ejecuta los tests con `.\mvnw.cmd test` (o `mvn test`).
+## 🧭 Scenario
+`starter/` is a small order system: `OrderService` places orders, there are notifiers per channel, counters and an exporter. Almost everything compiles and starts, but **11 of the 12 tests fail**. Each task fixes a group of tests. Work inside `starter/` and run the tests with:
 
-## Tareas
+```powershell
+.\mvnw.cmd test
+```
 
-### Tarea 1 - Scopes (`ScopesTest`)
-`HitWriter` escribe en un `HitCounter` y `HitReader` lo lee; `DemoResource` devuelve un id por petición.
-1. [ ] **Antes de ejecutar, predice:** con `HitCounter` en `@Dependent`, ¿ve `HitReader` los golpes que escribe `HitWriter`? ¿Y qué clase real tiene el objeto `HitCounter` que inyecta el test?
-2. [ ] Ejecuta `ScopesTest` y contrasta tu predicción con los mensajes de fallo.
-3. [ ] Corrige los scopes de `HitCounter` y de `RequestContextInfo` para que los 3 tests pasen. Fíjate en el nombre de la clase del objeto inyectado una vez corregido.
+```bash
+mvn test
+```
 
-### Tarea 2 - Qualifiers e `Instance` (`NotificationServiceTest`)
-1. [ ] En `NotificationService`, inyecta **por constructor** un único `Notifier` (sin qualifier) y ejecuta `.\mvnw.cmd package -DskipTests`. **Predice** el resultado y luego lee el error completo: ¿en qué fase se detecta, en build o al ejecutar?
-2. [ ] Crea un qualifier `@Channel` con un `enum Type { EMAIL, SMS }` como miembro, y aplícalo a `EmailNotifier` y `SmsNotifier`.
-3. [ ] Inyecta `@Channel(EMAIL) Notifier` y `@Channel(SMS) Notifier` para `emailTo` / `smsTo`.
-4. [ ] Implementa `broadcast` con `@Any Instance<Notifier>`.
-5. [ ] Ahora que los beans tienen `@Channel`, vuelve a inyectar un `Notifier` **sin** qualifier. ¿Sigue siendo ambiguo el error? Explica el cambio.
+What happens when an order is placed once you finish:
 
-### Tarea 3 - Producer y `@DefaultBean` (`ClockProducerTest`)
-`OrderService` usa `Instant.now()`: imposible de probar. El test ya trae un `Clock` fijo (`src/test/.../FixedClockProducer`).
-1. [ ] Crea un producer de `java.time.Clock` (reloj del sistema, UTC) marcado `@DefaultBean`.
-2. [ ] Inyecta el `Clock` en `OrderService` y úsalo para `createdAt`.
-3. [ ] Observa cómo el test sustituye el reloj sin tocar el código de producción. ¿Qué dos anotaciones lo consiguen?
+```mermaid
+sequenceDiagram
+    participant C as Caller
+    participant I as AuditInterceptor
+    participant S as OrderService
+    participant O as Observers
+    C->>I: place("laptop", 2)
+    I->>I: record "OrderService.place"
+    I->>S: proceed()
+    S->>O: fire(OrderPlaced) - synchronous
+    O-->>S: stock, then shipping (by priority)
+    S-)O: fireAsync(OrderPlaced) - asynchronous
+    S-->>C: Order
+    O--)O: notify customer (later, other thread)
+```
 
-### Tarea 4 - Interceptor (`AuditInterceptorTest`)
-1. [ ] Crea el binding `@Audited` (`@InterceptorBinding`) y el interceptor que registra `Clase.método` en `AuditLog` antes de ejecutar y luego continúa la invocación.
-2. [ ] Anota `OrderService.place` con `@Audited`.
+## ✅ Tasks
 
-### Tarea 5 - Eventos (`OrderEventsTest`)
-1. [ ] Inyecta `Event<OrderPlaced>` en `OrderService` y dispáralo de forma síncrona y asíncrona al registrar el pedido.
-2. [ ] En `OrderObservers`, haz de `shippingPrepared` y `stockReserved` observers síncronos, y que el **stock se ejecute antes que el envío** aunque esté declarado después (usa prioridad). Convierte `customerNotified` en observer asíncrono.
+### Task 1 - Scopes
+**Validated by:** `ScopesTest`.
 
-### Tarea 6 - Beans sin uso (`UnusedBeanTest`)
-1. [ ] Ejecuta el test, lee el mensaje y averigua por qué `LegacyExporter` "no existe" aunque tiene `@ApplicationScoped`.
-2. [ ] Corrígelo sin inyectar el bean en ningún sitio artificialmente.
+`HitWriter` writes into a `HitCounter` and `HitReader` reads it; `DemoResource` returns an id per request.
 
-### Tarea 7 - Experimentos (sin tests; **anota una predicción antes de cada uno**)
-Hazlos en una copia temporal o revierte después.
-1. [ ] **Autoinvocación:** añade a `OrderService` un método público `@Audited void validate(String item)` y llámalo desde `place` con `validate(item)`. ¿Cuántas entradas aparecen en `AuditLog`?
-2. [ ] **Excepción en un observer síncrono:** haz que `stockReserved` lance una excepción. ¿Qué pasa con `place()`? ¿Se ejecutan los demás observers?
-3. [ ] **Excepción en un observer asíncrono:** igual con `customerNotified`. ¿Se entera quien llamó a `place()`?
-4. [ ] **Request scope fuera de petición:** desde un `new Thread(...)` en un test, llama a `requestInfo.id()`. ¿Qué ocurre?
+| Scope | Instances | Lifetime | Proxy |
+|---|---|---|---|
+| `@ApplicationScoped` | one | the whole application | yes (client proxy) |
+| `@Singleton` | one | the whole application | no |
+| `@RequestScoped` | one per request | the HTTP request | yes (client proxy) |
+| `@Dependent` | one per injection point | the owner bean's | no |
 
-**Criterio de éxito:** los 12 tests pasan en `starter/` (`.\mvnw.cmd verify`) y has hecho la Tarea 7.
+🔮 **Predict first:** with `HitCounter` as `@Dependent`, does `HitReader` see the hits that `HitWriter` writes? And what real class is the `HitCounter` object the test receives?
 
-## Qué deberías ver
-- Tras la Tarea 1, el objeto inyectado es un proxy: `lab.melostudy.HitCounter_ClientProxy`.
-- Al final, `ScopesTest`, `NotificationServiceTest`, `ClockProducerTest`, `AuditInterceptorTest`, `OrderEventsTest` y `UnusedBeanTest` en verde (12 tests).
+- [ ] Run `ScopesTest` and compare your prediction with the failure messages.
+- [ ] Fix the scopes of `HitCounter` and `RequestContextInfo` so the 3 tests pass. Look at the class name of the injected object once it is fixed.
 
-## En proyectos reales
-- **Constructor injection** (como en este lab): dependencias explícitas, campos `final`, y las pruebas unitarias pueden construir la clase sin contenedor. Quarkus permite omitir `@Inject` si hay un solo constructor.
-- **Errores de inyección = fallo de build.** Dependencias ambiguas o no satisfechas se detectan en `package`, no en producción. Una CI que compila ya valida el grafo de beans.
-- **`@ApplicationScoped` por defecto** para servicios sin estado; **`@Singleton`** si no necesitas proxy (más simple y barato; es lo que usa el producer de `Clock` de este lab); **`@Dependent`** solo para objetos de vida corta ligados a quien los usa; **`@RequestScoped`** para datos de la petición (usuario, correlation id). Estado mutable compartido en `@ApplicationScoped` debe ser thread-safe.
-- **Sustituir beans en tests:** `@DefaultBean` en producción + `@Alternative`/`@Priority` en `src/test`, o `@InjectMock` (lab 14).
-- **Interceptors para preocupaciones transversales** (auditoría, métricas, reintentos). Ojo: el código del interceptor se ejecuta en cada llamada; mantenlo barato. Las anotaciones de Quarkus como `@Transactional` o `@Retry` son interceptors.
-- **Eventos para desacoplar**, no para flujos críticos: un observer síncrono que falla rompe a quien dispara; uno asíncrono falla en silencio (hay que registrar o gestionar el error dentro del observer). Si necesitas garantías de entrega, usa mensajería (lab 19).
-- **En entrevista (Spring vs Quarkus):** en Spring la autoinvocación no pasa por el proxy y no se aplican aspectos; en Quarkus (ArC) sí se interceptan. Y Quarkus hace la DI en build time: no hay reflexión ni escaneo en el arranque, lo que reduce memoria y tiempo de arranque (clave para native, lab 27).
+### Task 2 - Qualifiers and `Instance`
+**Validated by:** `NotificationServiceTest`.
 
-## Reto extra
-Selecciona el notificador **dinámicamente** por nombre de canal (`String`) usando `Instance.select(...)` con un `AnnotationLiteral<Channel>`. Pista: el literal debe devolver el valor del miembro del qualifier.
+- [ ] In `NotificationService`, inject a single `Notifier` **through the constructor** (no qualifier) and build the project.
 
-## Pistas
-<details><summary>Pista 1 (dirección)</summary>
+🔮 **Predict first:** what happens and in which phase?
 
-- Tarea 1: piensa cuántas instancias crea el contenedor por cada punto de inyección en cada scope.
-- Tarea 2: el qualifier necesita `@Qualifier`, retención en runtime y un miembro de enum.
-- Tarea 3: mira `io.quarkus.arc.DefaultBean` y cómo un producer declara su scope.
-- Tarea 6: busca en la guía `cdi-reference` la sección sobre eliminación de beans sin usar.
+```powershell
+.\mvnw.cmd package -DskipTests
+```
+
+```bash
+./mvnw package -DskipTests
+```
+
+- [ ] Read the full error: is it detected at build time or at runtime?
+- [ ] Create a `@Channel` qualifier with an `enum Type { EMAIL, SMS }` member, and apply it to `EmailNotifier` and `SmsNotifier`.
+- [ ] Inject `@Channel(EMAIL) Notifier` and `@Channel(SMS) Notifier` for `emailTo` / `smsTo`.
+- [ ] Implement `broadcast` with `@Any Instance<Notifier>`.
+
+> [!WARNING]
+> Now that the beans carry `@Channel`, inject a `Notifier` **without** a qualifier again. Is the error still "ambiguous"? Explain the change.
+
+### Task 3 - Producer and `@DefaultBean`
+**Validated by:** `ClockProducerTest`.
+
+`OrderService` uses `Instant.now()`: impossible to test. The test already brings a fixed `Clock` (`src/test/.../FixedClockProducer`).
+
+- [ ] Create a producer of `java.time.Clock` (system clock, UTC) marked `@DefaultBean`.
+- [ ] Inject the `Clock` into `OrderService` and use it for `createdAt`.
+- [ ] Notice how the test replaces the clock without touching production code. Which two annotations make that possible?
+
+### Task 4 - Interceptor
+**Validated by:** `AuditInterceptorTest`.
+
+- [ ] Create the `@Audited` binding (`@InterceptorBinding`) and the interceptor that records `Class.method` in `AuditLog` before running, then continues the invocation.
+- [ ] Annotate `OrderService.place` with `@Audited`.
+
+### Task 5 - Events
+**Validated by:** `OrderEventsTest`.
+
+- [ ] Inject `Event<OrderPlaced>` into `OrderService` and fire it both synchronously and asynchronously when an order is placed.
+- [ ] In `OrderObservers`, make `shippingPrepared` and `stockReserved` synchronous observers, and make **stock run before shipping** even though it is declared later (use priority).
+- [ ] Turn `customerNotified` into an asynchronous observer.
+
+### Task 6 - Unused beans
+**Validated by:** `UnusedBeanTest`.
+
+- [ ] Run the test, read the message and find out why `LegacyExporter` "does not exist" even though it has `@ApplicationScoped`.
+- [ ] Fix it without artificially injecting the bean anywhere.
+
+### Task 7 - Experiments (no tests)
+Do them in a temporary copy or revert afterwards.
+
+🔮 **Predict first, in writing, before each one.**
+
+- [ ] **Self-invocation:** add a public `@Audited void validate(String item)` method to `OrderService` and call it from `place` as `validate(item)`. How many entries appear in `AuditLog`?
+- [ ] **Exception in a synchronous observer:** make `stockReserved` throw an exception. What happens to `place()`? Do the other observers run?
+- [ ] **Exception in an asynchronous observer:** same with `customerNotified`. Does the caller of `place()` find out?
+- [ ] **Request scope outside a request:** from a `new Thread(...)` inside a test, call `requestInfo.id()`. What happens?
+
+**Success criteria:** the 12 tests pass inside `starter/` and you have done Task 7.
+
+```powershell
+.\mvnw.cmd verify
+```
+
+```bash
+mvn verify
+```
+
+## 👀 What you should see
+- After Task 1 the injected object is a proxy: `lab.melostudy.HitCounter_ClientProxy`.
+- At the end, `ScopesTest`, `NotificationServiceTest`, `ClockProducerTest`, `AuditInterceptorTest`, `OrderEventsTest` and `UnusedBeanTest` are green (12 tests).
+
+## 💼 In real projects
+- **Constructor injection** (as in this lab): explicit dependencies, `final` fields, and unit tests can build the class without a container. Quarkus lets you omit `@Inject` when there is a single constructor.
+- **Injection errors = build failures.** Ambiguous or unsatisfied dependencies are detected at `package` time, not in production. A CI that compiles already validates the bean graph.
+- **`@ApplicationScoped` by default** for stateless services; **`@Singleton`** when you do not need a proxy (simpler and cheaper; it is what this lab's `Clock` producer uses); **`@Dependent`** only for short-lived objects tied to their owner; **`@RequestScoped`** for per-request data (user, correlation id). Mutable shared state in an `@ApplicationScoped` bean must be thread-safe.
+- **Replacing beans in tests:** `@DefaultBean` in production + `@Alternative`/`@Priority` in `src/test`, or `@InjectMock` (lab 14).
+- **Interceptors for cross-cutting concerns** (auditing, metrics, retries). Watch out: the interceptor code runs on every call; keep it cheap. Quarkus annotations such as `@Transactional` or `@Retry` are interceptors.
+- **Events to decouple**, not for critical flows: a failing synchronous observer breaks whoever fires the event; an asynchronous one fails silently (log or handle the error inside the observer). If you need delivery guarantees, use messaging (lab 19).
+- **In an interview (Spring vs Quarkus):** in Spring, self-invocation does not go through the proxy so aspects are not applied; in Quarkus (ArC) it is intercepted. And Quarkus does DI at build time: no reflection or classpath scanning at startup, which reduces memory and startup time (key for native, lab 27).
+
+## 🚀 Stretch goal
+Select the notifier **dynamically** by channel name (`String`) using `Instance.select(...)` with an `AnnotationLiteral<Channel>`. Hint: the literal must return the value of the qualifier's member.
+
+## 💡 Hints
+<details><summary>Hint 1 (direction)</summary>
+
+- Task 1: think about how many instances the container creates per injection point in each scope.
+- Task 2: the qualifier needs `@Qualifier`, runtime retention and an enum member.
+- Task 3: look at `io.quarkus.arc.DefaultBean` and how a producer declares its scope.
+- Task 6: look in the `cdi-reference` guide for the section on removing unused beans.
 </details>
 
-<details><summary>Pista 2 (más concreta)</summary>
+<details><summary>Hint 2 (more concrete)</summary>
 
 - Scopes: `HitCounter` → `@ApplicationScoped`; `RequestContextInfo` → `@RequestScoped`.
-- Qualifier: `@Qualifier @Retention(RUNTIME) @Target({TYPE, METHOD, FIELD, PARAMETER}) @interface Channel { Type value(); }`. En el constructor: `@Channel(Channel.Type.EMAIL) Notifier email`.
-- Producer: `@Produces @Singleton @DefaultBean Clock clock() { return Clock.systemUTC(); }` dentro de un bean.
-- Interceptor: `@Audited @Interceptor @Priority(Interceptor.Priority.APPLICATION)` + método con `@AroundInvoke` que recibe `InvocationContext` y llama a `proceed()`.
-- Eventos: `@Observes @Priority(1000)` (menor número = antes); `@ObservesAsync`; `fire(...)` y `fireAsync(...)` son canales distintos.
-- Bean sin uso: `@io.quarkus.arc.Unremovable`.
+- Qualifier:
+
+```java
+@Qualifier
+@Retention(RUNTIME)
+@Target({ TYPE, METHOD, FIELD, PARAMETER })
+public @interface Channel {
+    Type value();
+    enum Type { EMAIL, SMS }
+}
+```
+
+  In the constructor: `@Channel(Channel.Type.EMAIL) Notifier email`.
+- Producer, inside a bean:
+
+```java
+@Produces @Singleton @DefaultBean
+Clock clock() { return Clock.systemUTC(); }
+```
+
+- Interceptor: `@Audited @Interceptor @Priority(Interceptor.Priority.APPLICATION)` + a method with `@AroundInvoke` that receives an `InvocationContext` and calls `proceed()`.
+- Events: `@Observes @Priority(1000)` (lower number = earlier); `@ObservesAsync`; `fire(...)` and `fireAsync(...)` are separate channels.
+- Unused bean: `@io.quarkus.arc.Unremovable`.
 </details>
 
-## Respuestas verificadas
-<details><summary>Abrir solo después de hacer las tareas</summary>
+## ✔️ Verified answers
+<details><summary>Open only after finishing the tasks</summary>
 
-Todo esto se comprobó ejecutándolo con Quarkus 3.40.1.1.
+Everything here was checked by running it on Quarkus 3.40.1.1.
 
-- **Tarea 1:** con `@Dependent`, cada punto de inyección recibe **su propia instancia**; `HitReader` ve 0 aunque el writer escriba. Con `@ApplicationScoped` hay una sola instancia compartida, y lo que se inyecta es un **client proxy** (`HitCounter_ClientProxy`) que delega en ella. Con `@RequestScoped` el id cambia en cada petición HTTP.
-- **Tarea 2.1:** falla en **build** (`package`), no al ejecutar: `AmbiguousResolutionException: Ambiguous dependencies for type lab.melostudy.Notifier and qualifiers [@Default]`, con los dos beans candidatos listados.
-- **Tarea 2.5:** al calificar los beans con `@Channel` pierden `@Default`. Inyectar `Notifier` sin qualifier pasa a ser **no satisfecho**: `UnsatisfiedResolutionException: Unsatisfied dependency for type lab.melostudy.Notifier and qualifiers [@Default]`. Sigue sin funcionar, pero por la causa contraria. `@Any Instance<Notifier>` sí los ve todos.
-- **Tarea 3.3:** `@Alternative` + `@Priority(1)`. Un alternative con prioridad gana a los beans normales y a los `@DefaultBean`.
-- **Tarea 4:** en esta versión el interceptor también funciona si se omite `@Priority`; aun así conviene declararlo para fijar el orden cuando hay varios interceptors sobre el mismo método.
-- **Tarea 6:** ArC elimina los beans que nadie inyecta ni observa y que no tienen interceptors (`quarkus.arc.remove-unused-beans`, por defecto activo). La búsqueda programática (`Arc.container().instance(...)`) no cuenta como uso. Solución: `@Unremovable`. Fíjate en que `OrderObservers` no se elimina porque tiene observers.
-- **Tarea 7.1:** `[OrderService.place, OrderService.validate]`: **2 entradas**. ArC sí intercepta la autoinvocación.
-- **Tarea 7.2:** `place()` lanza la excepción al llamador (`IllegalStateException: sync boom`). Los observers posteriores (incluido el asíncrono, que se dispara después) no llegan a ejecutarse.
-- **Tarea 7.3:** `place()` **retorna normalmente**; el fallo no llega al llamador.
-- **Tarea 7.4:** `ContextNotActiveException: RequestScoped context was not active when trying to obtain a bean instance for a client proxy of CLASS bean [class=lab.melostudy.RequestContextInfo ...]`. En el hilo del test funciona porque `@QuarkusTest` activa el contexto de petición. Las tareas en hilos propios (executors, `@Scheduled`) no lo tienen: usa `@ActivateRequestContext`.
+- **Task 1:** with `@Dependent`, every injection point gets **its own instance**; `HitReader` sees 0 even though the writer writes. With `@ApplicationScoped` there is a single shared instance, and what gets injected is a **client proxy** (`HitCounter_ClientProxy`) that delegates to it. With `@RequestScoped` the id changes on every HTTP request.
+- **Task 2 (no qualifier):** it fails at **build** time (`package`), not at runtime: `AmbiguousResolutionException: Ambiguous dependencies for type lab.melostudy.Notifier and qualifiers [@Default]`, listing both candidate beans.
+- **Task 2 (warning):** qualifying the beans with `@Channel` makes them lose `@Default`. Injecting a `Notifier` without a qualifier becomes **unsatisfied**: `UnsatisfiedResolutionException: Unsatisfied dependency for type lab.melostudy.Notifier and qualifiers [@Default]`. It still fails, but for the opposite reason. `@Any Instance<Notifier>` does see them all.
+- **Task 3:** `@Alternative` + `@Priority(1)`. An alternative with a priority beats normal beans and `@DefaultBean`s.
+- **Task 4:** in this version the interceptor also works if `@Priority` is omitted; still, declare it to fix the order when several interceptors apply to the same method.
+- **Task 6:** ArC removes beans that nobody injects or observes and that have no interceptors (`quarkus.arc.remove-unused-beans`, enabled by default). Programmatic lookup (`Arc.container().instance(...)`) does not count as usage. Fix: `@Unremovable`. Note that `OrderObservers` is not removed because it has observers.
+- **Task 7 (self-invocation):** `[OrderService.place, OrderService.validate]`: **2 entries**. ArC does intercept self-invocation.
+- **Task 7 (sync observer fails):** `place()` throws the exception to the caller (`IllegalStateException: sync boom`). Later observers (including the asynchronous one, fired afterwards) never run.
+- **Task 7 (async observer fails):** `place()` **returns normally**; the failure does not reach the caller.
+- **Task 7 (request scope):** `ContextNotActiveException: RequestScoped context was not active when trying to obtain a bean instance for a client proxy of CLASS bean [class=lab.melostudy.RequestContextInfo ...]`. It works in the test thread because `@QuarkusTest` activates the request context. Tasks in your own threads (executors, `@Scheduled`) do not have it: use `@ActivateRequestContext`.
 </details>
 
-## Autoevaluación
-Responde sin mirar el código; deberías poder explicarlo en una entrevista.
+## 🎤 Self-assessment
+Answer without looking at the code; you should be able to explain each one in an interview.
 
-1. ¿Qué diferencia hay entre `@ApplicationScoped`, `@Singleton` y `@Dependent`? ¿Qué es un client proxy y por qué lo necesitan los scopes normales?
-2. Dos beans inyectan la misma interfaz y el proyecto no compila. ¿Cuándo falla (build o ejecución) y cómo lo resuelves de tres formas distintas?
-3. Un bean `@ApplicationScoped` que nadie inyecta no aparece al buscarlo por `Arc.container()` o `CDI.current()`. ¿Por qué ocurre y cómo se arregla?
-4. ¿Cómo sustituyes en un test un bean de producción por otro sin tocar el código principal? Nombra dos mecanismos.
-5. Compara `@Observes` y `@ObservesAsync` respecto a hilo de ejecución, orden y propagación de errores. ¿Cuándo usarías mensajería en vez de eventos CDI?
+1. What is the difference between `@ApplicationScoped`, `@Singleton` and `@Dependent`? What is a client proxy and why do normal scopes need it?
+2. Two beans inject the same interface and the project does not compile. When does it fail (build or runtime) and how do you fix it in three different ways?
+3. An `@ApplicationScoped` bean that nobody injects does not show up when looked up through `Arc.container()` or `CDI.current()`. Why does that happen and how do you fix it?
+4. How do you replace a production bean with another one in a test without touching the main code? Name two mechanisms.
+5. Compare `@Observes` and `@ObservesAsync` regarding execution thread, ordering and error propagation. When would you use messaging instead of CDI events?
 
-La solución completa está en `solution/`.
+The complete solution is in `solution/`.
 
-## Retrospectiva
-- ¿Qué entendí de CDI en Quarkus?
-- ¿Qué me costó?
-- ¿Qué reforzar?
+## 🔁 Retrospective
+- What did I understand about CDI in Quarkus?
+- What was hard?
+- What should I reinforce?

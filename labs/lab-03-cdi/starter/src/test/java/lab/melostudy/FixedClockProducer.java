@@ -11,8 +11,8 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
 /**
- * Infraestructura de test (no es parte de la tarea): sustituye el Clock de producción
- * por uno fijo. Un {@code @Alternative} con {@code @Priority} gana a cualquier otro bean.
+ * Test infrastructure (not part of the task): replaces the production Clock
+ * with a fixed one. An {@code @Alternative} with {@code @Priority} beats any other bean.
  */
 @ApplicationScoped
 public class FixedClockProducer {

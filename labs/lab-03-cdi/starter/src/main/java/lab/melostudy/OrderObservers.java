@@ -3,12 +3,12 @@ package lab.melostudy;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Reacciones a OrderPlaced.
+ * Reactions to OrderPlaced.
  *
- * TODO (Tarea 5): convierte estos métodos en observers.
- * - shippingPrepared y stockReserved son síncronos; el stock debe ejecutarse ANTES que el envío
- *   aunque esté declarado después (usa prioridad).
- * - customerNotified es asíncrono.
+ * TODO (Task 5): turn these methods into observers.
+ * - shippingPrepared and stockReserved are synchronous; stock must run BEFORE shipping
+ *   even though it is declared later (use priority).
+ * - customerNotified is asynchronous.
  */
 @ApplicationScoped
 public class OrderObservers {

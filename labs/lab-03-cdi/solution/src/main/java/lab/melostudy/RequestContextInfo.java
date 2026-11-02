@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.RequestScoped;
 
-/** Identifica la petición HTTP en curso: cada petición debe tener un id distinto. */
+/** Identifies the current HTTP request: every request must get a different id. */
 @RequestScoped
 public class RequestContextInfo {
 

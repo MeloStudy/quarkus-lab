@@ -5,11 +5,11 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Envía notificaciones por canal.
+ * Sends notifications per channel.
  *
- * TODO (Tarea 2): inyecta los notifiers por constructor.
- * - emailTo / smsTo usan UN canal concreto (qualifier).
- * - broadcast usa TODAS las implementaciones de Notifier (Instance<Notifier> con @Any).
+ * TODO (Task 2): inject the notifiers through the constructor.
+ * - emailTo / smsTo use ONE specific channel (qualifier).
+ * - broadcast uses ALL Notifier implementations (Instance<Notifier> with @Any).
  */
 @ApplicationScoped
 public class NotificationService {
@@ -22,7 +22,7 @@ public class NotificationService {
         throw new UnsupportedOperationException("TODO");
     }
 
-    /** Devuelve un acuse por cada canal disponible, ordenados alfabéticamente. */
+    /** Returns one acknowledgement per available channel, sorted alphabetically. */
     public List<String> broadcast(String to, String message) {
         throw new UnsupportedOperationException("TODO");
     }

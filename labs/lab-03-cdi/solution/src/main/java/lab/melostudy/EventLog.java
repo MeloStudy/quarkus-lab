@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-/** Registro de lo que hacen los observers de eventos. */
+/** Record of what the event observers do. */
 @ApplicationScoped
 public class EventLog {
 

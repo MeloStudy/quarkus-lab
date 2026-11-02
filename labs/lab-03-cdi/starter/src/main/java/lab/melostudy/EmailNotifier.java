@@ -2,7 +2,7 @@ package lab.melostudy;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-// TODO (Tarea 2): necesita un qualifier para distinguirse de SmsNotifier
+// TODO (Task 2): needs a qualifier to tell it apart from SmsNotifier
 @ApplicationScoped
 public class EmailNotifier implements Notifier {
 

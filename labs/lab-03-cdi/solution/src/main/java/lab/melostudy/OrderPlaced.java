@@ -1,5 +1,5 @@
 package lab.melostudy;
 
-/** Evento de dominio: se dispara cuando se registra un pedido. */
+/** Domain event: fired when an order is placed. */
 public record OrderPlaced(Order order) {
 }

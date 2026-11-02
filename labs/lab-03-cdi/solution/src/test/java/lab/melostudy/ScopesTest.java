@@ -33,7 +33,7 @@ class ScopesTest {
     @Test
     void sharedBeansAreInjectedAsClientProxies() {
         assertTrue(counter.getClass().getName().contains("ClientProxy"),
-                "Se esperaba un client proxy y llegó: " + counter.getClass().getName());
+                "Expected a client proxy but got: " + counter.getClass().getName());
     }
 
     @Test

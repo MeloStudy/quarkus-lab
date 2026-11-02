@@ -28,13 +28,13 @@ class AuditInterceptorTest {
         orders.place("monitor", 2);
         assertEquals(1, audit.entries().size());
         assertTrue(audit.entries().get(0).contains("OrderService.place"),
-                "Entrada de auditoría inesperada: " + audit.entries());
+                "Unexpected audit entry: " + audit.entries());
     }
 
     @Test
     void auditedMethodStillReturnsItsResult() {
-        Order order = orders.place("ratón", 3);
-        assertEquals("ratón", order.item());
+        Order order = orders.place("mouse", 3);
+        assertEquals("mouse", order.item());
         assertEquals(3, order.quantity());
     }
 }

@@ -15,7 +15,7 @@ class UnusedBeanTest {
     @Test
     void legacyExporterIsAvailableByProgrammaticLookup() {
         InstanceHandle<LegacyExporter> handle = Arc.container().instance(LegacyExporter.class);
-        assertTrue(handle.isAvailable(), "ArC eliminó el bean porque nadie lo inyecta");
+        assertTrue(handle.isAvailable(), "ArC removed the bean because nobody injects it");
         assertEquals("csv", handle.get().export());
     }
 }

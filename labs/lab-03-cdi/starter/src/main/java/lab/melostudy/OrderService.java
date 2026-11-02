@@ -6,11 +6,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Registra pedidos.
+ * Places orders.
  *
- * TODO (Tarea 3): la hora debe venir de un java.time.Clock inyectado, no de Instant.now().
- * TODO (Tarea 4): auditar place() con un interceptor.
- * TODO (Tarea 5): disparar OrderPlaced (síncrono y asíncrono) al registrar el pedido.
+ * TODO (Task 3): the time must come from an injected java.time.Clock, not from Instant.now().
+ * TODO (Task 4): audit place() with an interceptor.
+ * TODO (Task 5): fire OrderPlaced (synchronous and asynchronous) when the order is placed.
  */
 @ApplicationScoped
 public class OrderService {

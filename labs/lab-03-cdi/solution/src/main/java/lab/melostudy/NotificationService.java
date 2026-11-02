@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 
-/** Envía notificaciones por canal. */
+/** Sends notifications per channel. */
 @ApplicationScoped
 public class NotificationService {
 
@@ -30,7 +30,7 @@ public class NotificationService {
         return sms.send(to, message);
     }
 
-    /** Devuelve un acuse por cada canal disponible, ordenados alfabéticamente. */
+    /** Returns one acknowledgement per available channel, sorted alphabetically. */
     public List<String> broadcast(String to, String message) {
         return all.stream()
                 .map(notifier -> notifier.send(to, message))

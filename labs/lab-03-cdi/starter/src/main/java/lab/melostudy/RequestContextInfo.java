@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-/** Identifica la petición HTTP en curso: cada petición debe tener un id distinto. */
-// TODO (Tarea 1): ¿qué scope hace que el id cambie en cada petición?
+/** Identifies the current HTTP request: every request must get a different id. */
+// TODO (Task 1): which scope makes the id change on every request?
 @ApplicationScoped
 public class RequestContextInfo {
 
