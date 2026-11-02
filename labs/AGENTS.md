@@ -92,10 +92,11 @@ READMEs are learning material; they must be easy to scan and follow.
 Scaffold a new lab by copying `pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn/` and `.gitignore` from the latest lab's `starter/` (no network needed), then change the `artifactId`. Keep the platform version identical across labs; upgrade all labs together, never one by one. `.env` stays in `.gitignore`.
 
 A lab is done only when all of this is true:
-- [ ] `solution` is green and `starter` fails exactly on the target tests (a regression-guard test that passes from the start is welcome).
+- [ ] `solution` is green and `starter` fails exactly on the target tests (a regression-guard test that passes from the start is welcome). Run `labs/verify.ps1` (all labs) or `labs/verify.ps1 -Lab <folder>`; it checks green solution / red starter.
 - [ ] Every command and quoted output in the README was run on the project's version.
 - [ ] The README follows `_template/README.md` (style rules above) and contains no leftover Spanish.
 - [ ] No BOM in any file; no `target/` or `.env` committed.
+- [ ] `mvnw` is executable in git (`git update-index --chmod=+x labs/<lab>/<variant>/mvnw`), otherwise `./mvnw` fails on Linux, macOS, WSL and CI.
 - [ ] `SYLLABUS.md` status is updated (🟨 once built; ✅ only after the learner finishes and gives feedback).
 - [ ] One commit `feat(lab_N): ...` ending with the session attribution line the harness requires.
 - [ ] Pushed to `origin/main` (milestone reached).
