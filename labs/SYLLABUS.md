@@ -50,7 +50,7 @@
 ## Block 4 - REST for production
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
-| 14 | JSON in depth | `java.time`, enums, unknown properties, naming, polymorphism, custom (de)serializers, `ObjectMapper` customization | Owns serialization | Minimal app | ⬜ |
+| [14](lab-14-json/README.md) | JSON in depth | A reservations API contract: snake_case names, ISO `LocalDate`/`Instant`, enum codes with `@JsonValue`, strict input (unknown properties, datetime for a date), polymorphic payments with `Id.NAME` (and why not `Id.CLASS`), a custom `Money` (de)serializer registered with `ObjectMapperCustomizer` | Owns serialization | Minimal app (in memory, no database) | 🟨 |
 | 15 | HTTP for production | CORS, ETag and `If-Match` / `If-None-Match` (optimistic concurrency over HTTP), file upload and download, API versioning | Builds on 10 (optimistic locking was a stretch there) | Minimal app with `@Version` entity | ⬜ |
 
 ## Block 5 - Testing
@@ -102,7 +102,7 @@
 | **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist | Uses everything | Empty project | ⬜ |
 
 ## Notes for the next labs
-- **Block 3 (persistence) is now fully built (labs 08-13).** Next block: lab 14 (JSON in depth), a minimal app. Entities are separate from the API since lab 12 (MapStruct is outside the Quarkus BOM and needs the `annotationProcessorPaths` entry); schema changes always go through a Flyway migration (lab 11).
+- **Lab 15 (HTTP for production):** minimal app with a `@Version` entity (needs a database, so Dev Services/Docker). Lab 14 left the JSON contract strict (`fail-on-unknown-properties=true`, snake_case): decide in lab 15 whether that applies to its small app. Entities are separate from the API since lab 12; schema changes always go through a Flyway migration (lab 11).
 - **Projects (P1, P2, P3):** the first one needs a written specification and an acceptance test suite that is visible but has no hints. Decide the domain when the block before it is finished.
 - **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
