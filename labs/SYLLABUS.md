@@ -24,7 +24,7 @@
 | Lab | Topic | What is practiced | Status |
 |-----|-------|-------------------|--------|
 | [04](lab-04-quarkus-rest/README.md) | Quarkus REST | Resources, JSON, status codes, `Location`, parameters, paging, response filters, resource lifecycle | 🟨 |
-| 05 | Validation and errors | Hibernate Validator, `ExceptionMapper`, consistent error responses | ⬜ |
+| [05](lab-05-validation-errors/README.md) | Validation and errors | Hibernate Validator, custom constraints, `@ServerExceptionMapper`, one error contract, catch-all without leaks | 🟨 |
 | 06 | OpenAPI | Documenting the API, Swagger UI | ⬜ |
 | 07 | REST Client | Consuming another API with `@RegisterRestClient` | ⬜ |
 
