@@ -33,7 +33,7 @@
 | Lab | Topic | What is practiced | Status |
 |-----|-------|-------------------|--------|
 | [08](lab-08-panache/README.md) | Hibernate ORM with Panache | Repository vs active record, Dev Services, paging in the database, uniqueness as a constraint (409), same-transaction writes, running the jar against a real PostgreSQL | 🟨 |
-| 09 | Relationships and inheritance | `@OneToMany`, `@ManyToMany`, inheritance strategies | ⬜ |
+| [09](lab-09-relationships/README.md) | Relationships and inheritance | `@ManyToMany` and `@OneToMany`/`@ManyToOne` (owning vs inverse side), `SINGLE_TABLE` inheritance, `LazyInitializationException`, N+1, cascade vs bulk delete | 🟨 |
 | 10 | Queries and transactions | Pagination, queries, `@Transactional` | ⬜ |
 | 11 | Migrations | Flyway | ⬜ |
 | 12 | DTOs and MapStruct | Separating entity and DTO, mapping with MapStruct (`componentModel = cdi`) | ⬜ |
@@ -81,7 +81,7 @@
 | 30 | Capstone project | A complete service from scratch: REST + persistence + security + resilience + observability + container + CI, with a production checklist | ⬜ |
 
 ## Notes for the next labs
-- **Lab 09 (relationships):** continues the Panache domain of lab 08 (`Product` entity, `TestData` helper, Dev Services). Remember that `lower(name)` could not be an `@Index`; lab 11 (Flyway) is where such SQL-level constraints belong.
+- **Lab 10 (queries and transactions):** continues the same domain (`Product` with labels and reviews, `TestData`, `QueryCounter`). Lab 09 already hit a transaction boundary (the `LazyInitializationException` after `@Transactional` returns); lab 10 can build on it (transaction scope, flush, rollback rules, isolation, optimistic locking).
 - Labs 09 and 10 continue the same domain (relationships, queries, transactions).
 
 ## Pace
