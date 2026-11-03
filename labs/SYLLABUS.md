@@ -64,7 +64,7 @@
 ## Block 6 - Security
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
-| 19 | Authentication and roles | Basic auth, `@RolesAllowed`, identity in tests (`@TestSecurity`) | Owns authorization basics | Minimal app | ⬜ |
+| [19](lab-19-auth-roles/README.md) | Authentication and roles | HTTP Basic with the embedded realm (dev/test only), 401 vs 403 vs 404, `@RolesAllowed` / `@Authenticated` / `@PermitAll`, a closed default (`deny-unannotated-endpoints`), ownership rules written against the `SecurityIdentity` (no mass assignment), path policies for a static file, `@TestSecurity` and what it cannot prove, and what the packaged app does in `prod` without a provider (500 everywhere) | Owns authorization basics | Minimal app (reports API, in memory, no Docker) | 🟨 |
 | 20 | JWT | SmallRye JWT: verifying tokens, claims, roles from a token, token in tests | Owns JWT | Minimal app | ⬜ |
 | 21 | OIDC and Keycloak | OIDC service apps, Keycloak with Dev Services, token propagation | Builds on 20 | Minimal app | ⬜ |
 | 22 | TLS and secrets | HTTPS, security headers, secrets out of the repo and out of the jar | Owns secrets (builds on 02) | Minimal app | ⬜ |
