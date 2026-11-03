@@ -80,7 +80,7 @@
 ## Block 8 - Reactive and communication
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
-| 26 | Execution model | Event loop vs worker threads, `@Blocking`/`@NonBlocking`, virtual threads (`@RunOnVirtualThread`) | Owns the execution model | Minimal app | ⬜ |
+| [26](lab-26-execution-model/README.md) | Execution model | Where an endpoint runs (return type, `@Blocking`, `@NonBlocking`, `@RunOnVirtualThread`), a blocked event loop (the `ping` that waits, the blocked-thread warning, `await()` refused on the loop), many waits on four workers vs virtual threads, pinning of `synchronized` on Java 21 (a per-SKU lock that still defeats them), and a profile that makes the machine small and equal everywhere | Owns the execution model; `Uni` appears only as a return type (27 owns Mutiny) | Minimal app with a slow blocking driver | 🟨 |
 | 27 | Mutiny | `Uni`, `Multi`, composition, errors, backpressure basics | Owns Mutiny | Minimal app | ⬜ |
 | 28 | Reactive messaging (in memory) | SmallRye Reactive Messaging channels, acknowledgement, failure handling | Owns messaging concepts | Minimal app | ⬜ |
 | 29 | Kafka *(elective)* | Kafka with Dev Services, serialization, consumer groups, dead-letter, outbox idea | Builds on 28 and on 10 (transactions) | Minimal app | ⬜ |
