@@ -180,7 +180,7 @@ Start any server on port 9090 that answers `{"city":"Lima","price":12.5}` to `GE
 - **These policies protect you; they do not fix the dependency.** Alerts on breaker openings and fallback rates are what tell a human that something is wrong.
 
 ## 🚀 Stretch goal
-Add exponential backoff to the retry (look at `@ExponentialBackoff` in the Quarkus guide) and jitter back, and write a test that proves the pauses grow. Then explain why this test is harder to keep stable than the ones in this lab.
+Add exponential backoff to the retry (look at `@ExponentialBackoff` in `io.smallrye.faulttolerance.api`) and jitter back, and write a test that proves the pauses grow. Then explain why this test is harder to keep stable than the ones in this lab.
 
 ## 💡 Hints
 <details><summary>Hint 1 (direction)</summary>
