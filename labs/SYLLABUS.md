@@ -72,7 +72,7 @@
 ## Block 7 - Resilience and observability
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
-| 23 | Fault tolerance | Retry, timeout, circuit breaker, fallback, bulkhead | Owns resilience; builds on the REST Client and timeouts of 07 | Minimal app with a flaky remote (stub of 07) | ⬜ |
+| [23](lab-23-fault-tolerance/README.md) | Fault tolerance | Timeout, retry (what to retry), fallback (stale, never invented), circuit breaker (window, `failOn`, config override), bulkhead; a scripted carrier stub | Owns resilience; builds on the REST Client and timeouts of 07 | Minimal app with a flaky remote (stub of 07) | 🟨 |
 | 24 | Health and metrics | SmallRye Health (liveness vs readiness), Micrometer, custom metrics | Owns health and metrics | Minimal app | ⬜ |
 | 25 | Logging and tracing | Structured logging, correlation id, OpenTelemetry | Owns logging and tracing (the request id of 04 is the starting idea) | Minimal app | ⬜ |
 | **P2** | **Project 2 - a service that is secure and observable** | A service that calls a remote dependency: authentication, resilience, metrics, tracing, health. A finished showcase with a written spec and a guided review | Uses blocks 6-7 (and 3 if it needs data) | Built from scratch by the agent | ⬜ |
