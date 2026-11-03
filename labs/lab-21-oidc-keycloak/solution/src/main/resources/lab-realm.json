@@ -1,0 +1,77 @@
+{
+  "realm": "lab",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      { "name": "reader" },
+      { "name": "editor" },
+      { "name": "admin" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "notes-service",
+      "enabled": true,
+      "bearerOnly": false,
+      "publicClient": false,
+      "secret": "notes-secret",
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocolMappers": [
+        {
+          "name": "audience-notes-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "notes-service",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "billing-service",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "billing-secret",
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false
+    }
+  ],
+  "users": [
+    {
+      "username": "rita",
+      "enabled": true,
+      "email": "rita@lab.example",
+      "emailVerified": true,
+      "firstName": "Rita",
+      "lastName": "Reader",
+      "credentials": [ { "type": "password", "value": "rita-pw", "temporary": false } ],
+      "realmRoles": [ "reader" ]
+    },
+    {
+      "username": "eve",
+      "enabled": true,
+      "email": "eve@lab.example",
+      "emailVerified": true,
+      "firstName": "Eve",
+      "lastName": "Editor",
+      "credentials": [ { "type": "password", "value": "eve-pw", "temporary": false } ],
+      "realmRoles": [ "reader", "editor" ]
+    },
+    {
+      "username": "adam",
+      "enabled": true,
+      "email": "adam@lab.example",
+      "emailVerified": true,
+      "firstName": "Adam",
+      "lastName": "Admin",
+      "credentials": [ { "type": "password", "value": "adam-pw", "temporary": false } ],
+      "realmRoles": [ "admin" ]
+    }
+  ]
+}
