@@ -6,7 +6,7 @@
 **Format:** short labs (1-2 h). Two types depending on the topic:
 - **Type A (starter + solution):** code with behavior verifiable by tests. `starter/` has TODOs and failing tests; `solution/` is the reference.
 - **Type B (guide):** operational or exploratory topics (containers, native, Kubernetes, observability). A single project and a step-by-step guide with commands and "what you should see"; no separate solution.
-- **Project (P1, P2, P3):** 3-6 h. You build a small service from a written specification with acceptance tests, using what you learned so far. No TODO per task, no step-by-step; the solution is a reference, not a script.
+- **Project (P1, P2, P3):** a finished, working showcase of a small service that applies what the blocks taught, with a written specification and a guided review (`REVIEW.md`: reading order, the reason behind each decision, traps found while building it, experiments to break it). No starter, no TODOs: you read it, run it, break it and challenge it in the feedback session. (Decided with the learner on 2026-11-02: projects are not question-and-answer exercises.)
 
 **Feedback:** per lab and asynchronous. The learner solves a lab, comments what could improve, and the improvements are applied to that lab, to the earlier ones and to the labs still to be built. Building never waits for feedback; the agent reminds the learner when a block is finished.
 
@@ -59,7 +59,7 @@
 | [16](lab-16-quarkus-test/README.md) | `@QuarkusTest` | `@InjectMock` (and its normal-scope rule), `QuarkusMock.installMockForType` with a fixed `Clock`, shared state that outlives a test, `@TestTransaction` and why HTTP cannot see its rows, a plain Mockito unit test next to the slow ones, what a `@TestProfile` costs. The learner completes the arrangement of finished test classes | Owns mocking | Minimal app (Dev Services for the database) | 🟨 |
 | [17](lab-17-test-profiles/README.md) | Dev Services and test profiles | Dev Services configuration (pinned PostgreSQL image, init script for a table Hibernate does not own), a `QuarkusTestResourceLifecycleManager` that starts a fake remote service before the app and hands over its URL, `QuarkusTestProfile` (config overrides and attached resources), counting application starts (3, 4 with a copy profile class, 2 with a GLOBAL resource), container reuse. The learner completes the infrastructure of finished test classes | Owns test profiles (Dev Services intro was lab 08) | Minimal app with a database | 🟨 |
 | [18](lab-18-service-tests/README.md) | Integration tests between services | WireMock (outside the BOM, justified) started by a lifecycle manager and injected into the test, stubs generated from a shared JSON contract, failure injection (500, garbage, missing field, connection reset, slow answer), provider-side contract verification with provider state, `@QuarkusIntegrationTest` against the packaged jar. Two Maven modules (`inventory`, `orders`). The learner completes the infrastructure of finished test classes | Owns WireMock and contracts | Two minimal services | 🟨 |
-| **P1** | **Project 1 - a service from a specification** | REST + validation + persistence + migrations + DTOs + tests, new small domain, written spec and acceptance tests | Uses blocks 1-5 | Empty project | ⬜ |
+| [P1](project-1-issue-tracker/README.md) | **Project 1 - an issue tracker (showcase)** | A finished service: projects, issues numbered per project under concurrency, a status state machine, comments, an audit trail written in the same transaction, `ETag`/`If-Match`, a safe search with a whitelisted sort and no N+1, Flyway with database-level CHECKs, one error contract. 72 tests, a jar run against PostgreSQL, and a guided review with five break-it-yourself experiments | Uses blocks 1-5 | Built from scratch by the agent (no starter) | 🟨 |
 
 ## Block 6 - Security
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
@@ -75,7 +75,7 @@
 | 23 | Fault tolerance | Retry, timeout, circuit breaker, fallback, bulkhead | Owns resilience; builds on the REST Client and timeouts of 07 | Minimal app with a flaky remote (stub of 07) | ⬜ |
 | 24 | Health and metrics | SmallRye Health (liveness vs readiness), Micrometer, custom metrics | Owns health and metrics | Minimal app | ⬜ |
 | 25 | Logging and tracing | Structured logging, correlation id, OpenTelemetry | Owns logging and tracing (the request id of 04 is the starting idea) | Minimal app | ⬜ |
-| **P2** | **Project 2 - a service that is secure and observable** | A service that calls a remote dependency: authentication, resilience, metrics, tracing, health, with a written spec and acceptance tests | Uses blocks 6-7 (and 3 if it needs data) | Empty project | ⬜ |
+| **P2** | **Project 2 - a service that is secure and observable** | A service that calls a remote dependency: authentication, resilience, metrics, tracing, health. A finished showcase with a written spec and a guided review | Uses blocks 6-7 (and 3 if it needs data) | Built from scratch by the agent | ⬜ |
 
 ## Block 8 - Reactive and communication
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
@@ -99,11 +99,11 @@
 ## Block 10 - Capstone
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
 |-----|-------|-------------------|------------------|-------------|--------|
-| **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist | Uses everything | Empty project | ⬜ |
+| **P3** | **Capstone project** | A complete service in three milestones: (1) API, persistence, migrations; (2) security, resilience, observability; (3) container, CI and a production checklist. A finished showcase with a guided review | Uses everything | Built from scratch by the agent | ⬜ |
 
 ## Notes for the next labs
-- **Block 5 (testing) labs 16-18 are built; P1 closes it.** P1 is the first project: an empty project, a written specification and a visible acceptance suite without hints, using blocks 1-5 (REST, validation, persistence, Flyway, DTOs, tests). Decide the domain when starting it. Lab 18 introduced a multi-module layout (`inventory` + `orders` + `contracts/`) and a `verify.ps1` that runs `verify -DskipITs=false` when a variant has `*IT.java` and collects reports from every module (`surefire-reports` and `failsafe-reports`).
-- **Projects (P1, P2, P3):** the first one needs a written specification and an acceptance test suite that is visible but has no hints. Decide the domain when the block before it is finished.
+- **Block 5 (testing) is fully built: labs 16-18 and P1.** P1 is a finished showcase (an issue tracker in `project-1-issue-tracker/app`) with `README.md` (specification, how to run) and `REVIEW.md` (guided review). Lab 18 introduced a multi-module layout (`inventory` + `orders` + `contracts/`) and a `verify.ps1` that runs `verify -DskipITs=false` when a variant has `*IT.java` and collects reports from every module (`surefire-reports` and `failsafe-reports`); `verify.ps1` also accepts `project-*` folders, whose single `app` must be green.
+- **Projects (P1, P2, P3) are showcases, not exercises** (decided with the learner): the agent builds the whole service, documents the decisions and the traps, and the learner reviews it with the guide. Each project picks a new small domain (P1 issue tracker; P2 should be a service with a remote dependency; P3 a capstone in three milestones). Tests exist to prove the showcase works, they are not hidden acceptance tests.
 - **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
 ## Pace

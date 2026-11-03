@@ -1,7 +1,8 @@
 <#
 .SYNOPSIS
     Checks the "definition of done" of the labs: every solution must be green and every
-    starter must fail (otherwise the learner has nothing to do).
+    starter must fail (otherwise the learner has nothing to do). Projects (project-*) are
+    finished showcases: their single "app" must be green.
 
 .EXAMPLE
     .\verify.ps1                  # all labs
@@ -13,8 +14,11 @@ $root = $PSScriptRoot
 $failed = $false
 $rows = @()
 
-foreach ($dir in Get-ChildItem -Path $root -Directory -Filter "lab-*" | Where-Object { $_.Name -like $Lab }) {
-    foreach ($variant in 'solution', 'starter') {
+# Labs have a solution (all green) and a starter (some red). Projects are showcases: a single "app" that must be
+# all green.
+$dirs = @(Get-ChildItem -Path $root -Directory | Where-Object { ($_.Name -like 'lab-*' -or $_.Name -like 'project-*') -and $_.Name -like $Lab })
+foreach ($dir in $dirs) {
+    foreach ($variant in 'solution', 'starter', 'app') {
         $project = Join-Path $dir.FullName $variant
         if (-not (Test-Path (Join-Path $project 'pom.xml'))) { continue }
 
@@ -38,11 +42,12 @@ foreach ($dir in Get-ChildItem -Path $root -Directory -Filter "lab-*" | Where-Ob
             }
         } finally { Pop-Location }
 
-        $ok = if ($variant -eq 'solution') { ($tests -gt 0 -and $bad -eq 0) } else { ($bad -gt 0) }
+        $mustBeGreen = $variant -in 'solution', 'app'
+        $ok = if ($mustBeGreen) { ($tests -gt 0 -and $bad -eq 0) } else { ($bad -gt 0) }
         if (-not $ok) { $failed = $true }
         $rows += [pscustomobject]@{
             Lab = $dir.Name; Variant = $variant; Tests = $tests; Failed = $bad
-            Expected = $(if ($variant -eq 'solution') { 'all green' } else { 'some red' })
+            Expected = $(if ($mustBeGreen) { 'all green' } else { 'some red' })
             Result = $(if ($ok) { 'OK' } else { 'PROBLEM' })
         }
     }
