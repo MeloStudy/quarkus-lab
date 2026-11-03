@@ -67,7 +67,7 @@
 | [19](lab-19-auth-roles/README.md) | Authentication and roles | HTTP Basic with the embedded realm (dev/test only), 401 vs 403 vs 404, `@RolesAllowed` / `@Authenticated` / `@PermitAll`, a closed default (`deny-unannotated-endpoints`), ownership rules written against the `SecurityIdentity` (no mass assignment), path policies for a static file, `@TestSecurity` and what it cannot prove, and what the packaged app does in `prod` without a provider (500 everywhere) | Owns authorization basics | Minimal app (reports API, in memory, no Docker) | 🟨 |
 | [20](lab-20-jwt/README.md) | JWT | SmallRye JWT: verifying tokens (key, issuer, audience, lifetime), claims, `groups` as roles, tokens and `@TestSecurity`/`@JwtSecurity` in tests | Owns JWT | Minimal app | 🟨 |
 | [21](lab-21-oidc-keycloak/README.md) | OIDC and Keycloak | `quarkus-oidc` service app, Keycloak with Dev Services and a realm file, realm roles, audience, token propagation, `@OidcSecurity` (needs Docker) | Builds on 20 | Minimal app | 🟨 |
-| 22 | TLS and secrets | HTTPS, security headers, secrets out of the repo and out of the jar | Owns secrets (builds on 02) | Minimal app | ⬜ |
+| [22](lab-22-tls-secrets/README.md) | TLS and secrets | HTTPS with a PKCS12 keystore (TLS registry), redirect, TLS 1.3 default, security headers, secrets out of the repo and out of the jar, jar run with environment and mounted file | Owns secrets (builds on 02) | Minimal app | 🟨 |
 
 ## Block 7 - Resilience and observability
 | Lab | Topic | What is practiced | Owns / builds on | Starts from | Status |
@@ -103,7 +103,7 @@
 
 ## Notes for the next labs
 - **Block 5 (testing) is fully built: labs 16-18 and P1.** P1 is a finished showcase (an issue tracker in `project-1-issue-tracker/app`) with `README.md` (specification, how to run) and `REVIEW.md` (guided review). Lab 18 introduced a multi-module layout (`inventory` + `orders` + `contracts/`) and a `verify.ps1` that runs `verify -DskipITs=false` when a variant has `*IT.java` and collects reports from every module (`surefire-reports` and `failsafe-reports`); `verify.ps1` also accepts `project-*` folders, whose single `app` must be green.
-- **Block 6 (security) in progress: labs 19-21 built (lab 22 closes it).** Lab 20 keeps the token tests independent of any provider (`Tokens` helper + a throw-away key pair, labelled as such). Lab 21 (OIDC/Keycloak) should reuse the same endpoints idea, explain what changes (the provider mints the tokens, keys come from a JWKS URL, roles live in `realm_access`) and point back to the lab 20 stretch goal.
+- **Block 6 (security) is fully built: labs 19-22.** Lab 20 keeps the token tests independent of any provider (`Tokens` helper + a throw-away key pair, labelled as such). Lab 21 (OIDC/Keycloak) should reuse the same endpoints idea, explain what changes (the provider mints the tokens, keys come from a JWKS URL, roles live in `realm_access`) and point back to the lab 20 stretch goal.
 - **Projects (P1, P2, P3) are showcases, not exercises** (decided with the learner): the agent builds the whole service, documents the decisions and the traps, and the learner reviews it with the guide. Each project picks a new small domain (P1 issue tracker; P2 should be a service with a remote dependency; P3 a capstone in three milestones). Tests exist to prove the showcase works, they are not hidden acceptance tests.
 - **Cross references inside READMEs** (for example "lab 26" in lab 01) must follow this numbering; `grep` for `lab [0-9]` when the numbering changes.
 
