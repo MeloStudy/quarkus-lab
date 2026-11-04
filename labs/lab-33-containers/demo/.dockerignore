@@ -1,0 +1,4 @@
+# Everything is excluded from the build context, except what the Dockerfiles copy: the context is sent to the daemon on every build
+*
+!target/quarkus-app/
+!target/*-runner.jar
