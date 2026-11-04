@@ -1,0 +1,67 @@
+# A PostgreSQL for the local cluster, ONLY to try the application. It keeps its data in an emptyDir: delete the pod and the data is gone.
+# A real database is a managed service or an operator with volumes, backups and a password that is not in this repository.
+# The password comes from the Secret "clinic-db" (see the README): this file contains no secret.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinic-db
+  labels:
+    app.kubernetes.io/name: clinic-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clinic-db
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clinic-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17.11
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: clinic
+            - name: POSTGRES_USER
+              value: clinic
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: clinic-db
+                  key: password
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "clinic", "-d", "clinic"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clinic-db
+  labels:
+    app.kubernetes.io/name: clinic-db
+spec:
+  selector:
+    app.kubernetes.io/name: clinic-db
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432

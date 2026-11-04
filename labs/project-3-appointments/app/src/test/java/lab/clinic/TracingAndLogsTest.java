@@ -124,6 +124,24 @@ class TracingAndLogsTest {
     }
 
     @Test
+    void aTemporaryFailureLeavesALineThatSaysWhenTheNextTryIs() {
+        long bea = Clinic.patient("Bea", "bea@example.com");
+        Clinic.booked(ana, bea, checkup, "2026-03-02T10:00:00Z");
+        Provider.failNext(100, 503);
+        int mark = Logs.mark();
+
+        assertEquals(1, reminders.sendDue().retrying());
+
+        List<JsonNode> records = Logs.await(mark, r -> Logs.app(r).stream().anyMatch(x -> String.valueOf(Logs.text(x, "message")).contains("attempt 1 failed")));
+        JsonNode line = Logs.app(records).stream().filter(x -> String.valueOf(Logs.text(x, "message")).contains("attempt 1 failed"))
+                .findFirst().orElseThrow(() -> new AssertionError("a failed attempt must not be silent: " + records));
+        assertEquals("WARN", Logs.text(line, "level"));
+        assertEquals("1", Logs.text(line, "reminderId"));
+        assertTrue(Logs.text(line, "message").contains("the next try is at 2026-03-02T08:01:00"), Logs.text(line, "message"));
+        assertFalse(Logs.text(line, "message").contains("bea@example.com"));
+    }
+
+    @Test
     void theLogsNeverContainTheEmailOfThePatient() {
         long nobody = Clinic.patient("Nobody", "nobody@invalid.test");
         Clinic.booked(ana, nobody, checkup, "2026-03-02T10:00:00Z");

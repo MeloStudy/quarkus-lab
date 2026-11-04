@@ -5,7 +5,7 @@
 | a guided review per milestone | 3.40.1.1 LTS | 21 | C (finished showcase, built in three milestones) |
 
 > [!NOTE]
-> Like P1 and P2, this is **not an exercise**: the service is already built, with its tests green. You read it, run it, break it and challenge it in the feedback session. P3 is built in three milestones, each a commit, each verified before the next starts. The guided review (`REVIEW.md`) is written when the last one is done.
+> Like P1 and P2, this is **not an exercise**: the service is already built, with its tests green. You read it, run it, break it and challenge it in the feedback session. P3 is built in three milestones, each a commit, each verified before the next starts. The guided review is [`REVIEW.md`](REVIEW.md); what is missing for production is [`PRODUCTION.md`](PRODUCTION.md).
 
 ## 🎯 The one question
 > **Can two appointments overlap for the same practitioner - with time zones, daylight saving and simultaneous requests?**
@@ -17,7 +17,7 @@ Everything is designed around that question: the answer lives in the **database*
 |---|---|---|
 | 1 | **API, persistence, migrations**: practitioners, treatments, patients, working hours, availability, booking, rescheduling, cancelling; Flyway; one error contract; `ETag` / `If-Match`; paging | ✅ built (70 tests) |
 | 2 | **Security, resilience, observability**: JWT roles and ownership, reminders through a fake notification provider (timeout, retry, circuit breaker, idempotency key), health, metrics, JSON logs, traces | ✅ built (116 tests) |
-| 3 | **Container, CI, production checklist**: image, Kubernetes manifests, the manual workflow of lab 36, the packaged jar against PostgreSQL, `PRODUCTION.md`, `REVIEW.md` | ⬜ |
+| 3 | **Container, CI, production checklist**: image, Kubernetes manifests, the manual workflow of lab 36, the packaged jar against PostgreSQL, `PRODUCTION.md`, `REVIEW.md` | ✅ built (117 tests) |
 
 ## ▶️ How to run it
 Open a terminal **inside `app/`** (Docker must be running: PostgreSQL starts by itself, lab 8).
@@ -183,3 +183,213 @@ How a failure is classified (the question is "will asking again help?"):
 - `SecurityTest` and `ReminderResilienceTest` ran **5 times in a row** without a failure; the operations classes 3 times.
 - The fake provider is idempotent like a real one, so "how many messages went out" is read **at the provider**, not from the application's own report.
 - One finding that goes into `REVIEW.md`: the Quarkus OpenTelemetry integration owns the MDC keys `traceId` and `spanId` and they never reached the log line written by the reminder job (measured: the same code with `trace_id` and `span_id` did), so the job sets its own keys.
+
+## 📐 Milestone 3 - the packaged application, the cluster, the pipeline
+
+### What is where
+```text
+project-3-appointments/
+├── README.md        this file: the specification and how to run it
+├── REVIEW.md        the guided review: reading order, decisions, traps, 22 experiments to break it
+├── PRODUCTION.md    what a real deployment still needs, and what is deliberately not done
+├── app/             the service (117 tests)
+├── tools/           MintToken.java (a signed token) and NotificationStub.java (the fake provider): only the JDK
+└── k8s/             postgres.yaml: a throw-away database for the local cluster
+.github/workflows/project-3-ci.yml   the pipeline (manual on purpose)
+```
+
+### Run the packaged jar against a real PostgreSQL
+Docker must be running. Open **three** PowerShell windows at the root of `project-3-appointments/` (the project folder, not `app/`). The database container is called `clinic-pg` and is yours to remove at the end.
+
+**1. The database and the build**
+
+```powershell
+docker run -d --name clinic-pg -e POSTGRES_DB=clinic -e POSTGRES_USER=clinic -e POSTGRES_PASSWORD=clinic-local-only -p 5433:5432 postgres:17.11
+cd app
+.\mvnw.cmd -q clean package -DskipTests
+cd ..
+```
+
+**2. Try to start it without the key of the provider** - it must refuse:
+
+```powershell
+$env:QUARKUS_DATASOURCE_JDBC_URL = "jdbc:postgresql://localhost:5433/clinic"
+$env:QUARKUS_DATASOURCE_USERNAME = "clinic"
+$env:QUARKUS_DATASOURCE_PASSWORD = "clinic-local-only"
+java -jar app\target\quarkus-app\quarkus-run.jar
+```
+
+```text
+java.util.NoSuchElementException: SRCFG00014: The config property notifications.api-key is required but it could not be found in any config source
+```
+
+The exit code is 1, at startup: not a failure of the first reminder, days later.
+
+**3. The fake provider** (window 2; it is idempotent like a real one and counts what it delivers):
+
+```powershell
+java tools\NotificationStub.java
+```
+
+**4. The application** (window 1, the same variables as before plus the key the stub expects):
+
+```powershell
+$env:NOTIFICATIONS_API_KEY = "dev-key-not-a-secret"
+java -jar app\target\quarkus-app\quarkus-run.jar
+```
+
+It starts in about 3 seconds, applies the two migrations and prints JSON, one record per line. The health and the metrics are on **port 9000**, the API on 8080.
+
+**5. Use it** (window 3). Tokens come from `tools/MintToken.java`; the number is the id of the patient or practitioner the token stands for:
+
+```powershell
+$rec = java tools\MintToken.java reception front-desk
+$bea = java tools\MintToken.java patient bea 1
+$h = @("-s","-H","Authorization: Bearer $rec","-H","Content-Type: application/json")
+function Post($url, $json) { $f = "$env:TEMP\body.json"; [System.IO.File]::WriteAllText($f, $json); curl.exe @h --data-binary "@$f" $url }
+
+Post "localhost:8080/api/practitioners" '{"name":"Dr. Ana Ruiz"}'
+Post "localhost:8080/api/treatments" '{"name":"Checkup","durationMinutes":30}'
+Post "localhost:8080/api/patients" '{"fullName":"Bea Mora","email":"bea@example.com"}'
+$blocks = (1..5 | ForEach-Object { '{"weekday":' + $_ + ',"start":"09:00","end":"13:00"}' }) -join ","
+[System.IO.File]::WriteAllText("$env:TEMP\hours.json", '{"blocks":[' + $blocks + ']}')
+curl.exe @h -X PUT --data-binary "@$env:TEMP\hours.json" "localhost:8080/api/practitioners/1/working-hours"
+```
+
+Book tomorrow at 10:00 in Madrid **as Bea**, then try what she must not do (change the date to your tomorrow; it must be a weekday):
+
+```powershell
+$f = "$env:TEMP\book.json"
+[System.IO.File]::WriteAllText($f, '{"practitionerId":1,"patientId":1,"treatmentId":1,"startsAt":"2026-11-05T09:00:00Z"}')
+curl.exe -s -H "Authorization: Bearer $bea" -H "Content-Type: application/json" --data-binary "@$f" localhost:8080/api/appointments
+curl.exe -s -o NUL -w "no token: %{http_code}`n" localhost:8080/api/appointments
+[System.IO.File]::WriteAllText($f, '{"practitionerId":1,"patientId":2,"treatmentId":1,"startsAt":"2026-11-05T09:30:00Z"}')
+curl.exe -s -H "Authorization: Bearer $bea" -H "Content-Type: application/json" --data-binary "@$f" localhost:8080/api/appointments
+```
+
+```text
+{"id":1,"practitionerId":1,"practitionerName":"Dr. Ana Ruiz",...,"startsAt":"2026-11-05T09:00:00Z","endsAt":"2026-11-05T09:30:00Z","local":"2026-11-05T10:00:00+01:00","status":"BOOKED","version":0}
+no token: 401
+{"code":"FORBIDDEN","message":"You can only book appointments for yourself"}
+```
+
+**6. The reminder goes out by itself** - the appointment is less than 24 hours away, so it is due at once, and the job runs every 30 seconds:
+
+```powershell
+Start-Sleep 35
+curl.exe -s -H "Authorization: Bearer $rec" localhost:8080/api/reminders
+curl.exe -s localhost:9091/__control/stats
+curl.exe -s localhost:9000/q/health/ready
+curl.exe -s -o NUL -w "health on the public port: %{http_code}`n" localhost:8080/q/health
+curl.exe -s localhost:9000/q/metrics | Select-String "^clinic_"
+```
+
+```text
+[{"id":1,"appointmentId":1,"status":"SENT","attempts":1,...}]
+{"calls":1,"deliveries":1,"seen":["reminder-1-v0 -> bea@example.com"],"traceparents":["00-...-03"]}
+health on the public port: 404
+```
+
+The provider's `seen` shows the **idempotency key** and the `traceparent` of the call. The metrics include `clinic_reminders_total{result="sent"}`, `clinic_notifications_call_seconds_count{outcome="sent"}` and `clinic_appointments_total{outcome="booked"}`.
+
+**7. Kill the provider (Ctrl+C in window 2) and keep working** - the clinic must not notice:
+
+```powershell
+[System.IO.File]::WriteAllText("$env:TEMP\carl.json", '{"fullName":"Carl Vega","email":"carl@example.com"}')
+curl.exe @h --data-binary "@$env:TEMP\carl.json" localhost:8080/api/patients
+[System.IO.File]::WriteAllText($f, '{"practitionerId":1,"patientId":2,"treatmentId":1,"startsAt":"2026-11-05T09:30:00Z"}')
+curl.exe -s -o NUL -w "booking with the provider DOWN: %{http_code}`n" @h --data-binary "@$f" localhost:8080/api/appointments
+Start-Sleep 40
+curl.exe -s -H "Authorization: Bearer $rec" "localhost:8080/api/reminders?status=PENDING"
+```
+
+```text
+booking with the provider DOWN: 201
+[{"id":2,...,"status":"PENDING","attempts":1,...,"lastError":"the provider could not be reached: ProcessingException"}]
+```
+
+Start the provider again (`java tools\NotificationStub.java`, window 2) and wait a minute: the second attempt (the wait after the first is one minute) delivers it. `GET /api/reminders` shows `SENT` with `attempts` 2, and the provider counts **one** delivery.
+
+**8. Clean up**: Ctrl+C in windows 1 and 2, then
+
+```powershell
+docker rm -f clinic-pg
+```
+
+### Run it in the local Kubernetes cluster
+Docker Desktop's Kubernetes (lab 35). It needs about 1.5 GB more than the jar; switch it off when you finish. Everything lives in the namespace `p3`.
+
+**Build the image and look at what the extension generated** (from `app/`):
+
+```powershell
+.\mvnw.cmd -q clean package -DskipTests "-Dquarkus.container-image.build=true"
+docker images lab/clinic
+Select-String -Path target\kubernetes\kubernetes.yml -Pattern "^kind:"
+```
+
+It generates a `ServiceAccount`, a `Role` and a `RoleBinding`, a `Service`, the `Deployment` and a **`Job` called `clinic-flyway-init`**: the migrations run once, before the rollout, in their own container, and the application's pod waits for that Job in an init container. The probes point at the management port (9000).
+
+**Create the namespace, the database and the configuration** (from the project folder). The passwords are made up for this exercise and are created with `kubectl`, never written in a file of the repository:
+
+```powershell
+kubectl create namespace p3
+kubectl -n p3 create secret generic clinic-db --from-literal=password=clinic-local-only
+kubectl -n p3 apply -f k8s\postgres.yaml
+kubectl -n p3 create configmap clinic-config --from-literal=QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://clinic-db:5432/clinic --from-literal=QUARKUS_REST_CLIENT_NOTIFICATIONS_URL=http://host.docker.internal:9090
+kubectl -n p3 create secret generic clinic-secret --from-literal=QUARKUS_DATASOURCE_USERNAME=clinic --from-literal=QUARKUS_DATASOURCE_PASSWORD=clinic-local-only --from-literal=NOTIFICATIONS_API_KEY=dev-key-not-a-secret
+kubectl -n p3 rollout status deploy/clinic-db --timeout=120s
+```
+
+The provider is the fake one, running **on your machine** (`java tools\NotificationStub.java`, as before): from a pod, `host.docker.internal` is your computer.
+
+**Deploy.** This is the procedure, and the first line is not optional (see "The Job" below):
+
+```powershell
+kubectl -n p3 delete job clinic-flyway-init --ignore-not-found
+kubectl -n p3 apply -f app\target\kubernetes\kubernetes.yml
+kubectl -n p3 rollout status deploy/clinic --timeout=150s
+kubectl -n p3 get pods,jobs
+```
+
+```text
+pod/clinic-...         1/1   Running     0
+pod/clinic-db-...      1/1   Running     0
+pod/clinic-flyway-init-...  0/1   Completed   0
+job.batch/clinic-flyway-init   Complete   1/1
+```
+
+**Try it** through two port-forwards (one for the API, one for the management port, which the Service does not expose):
+
+```powershell
+$pf1 = Start-Process kubectl -ArgumentList "-n","p3","port-forward","svc/clinic","18080:80" -PassThru -WindowStyle Hidden
+$pf2 = Start-Process kubectl -ArgumentList "-n","p3","port-forward","deploy/clinic","19000:9000" -PassThru -WindowStyle Hidden
+Start-Sleep 4
+curl.exe -s localhost:19000/q/health/ready
+```
+
+Repeat step 5 and 6 of the jar tour with port **18080** instead of 8080: the reminder is sent from the pod to the provider on your machine.
+
+**The Job.** Apply the generated manifest a second time without deleting the Job and you get `The Job "clinic-flyway-init" is invalid: spec.template: Invalid value: ...: field is immutable`, with the same version or a new one: a finished Job cannot be changed. The pipeline of a real project deletes it first, as above (Flyway is idempotent, so running it on every deploy is the point).
+
+**Clean up:**
+
+```powershell
+Stop-Process -Id $pf1.Id, $pf2.Id
+kubectl delete namespace p3
+docker rmi lab/clinic:1.0
+```
+
+Then stop the provider and, if you do not need it, switch Kubernetes off in Docker Desktop.
+
+### The pipeline
+`.github/workflows/project-3-ci.yml` builds and tests the service on a GitHub runner (the tests start their own PostgreSQL with Docker, which hosted Ubuntu runners have), checks that the generated manifest has a `Job` and no `ServiceMonitor`, uploads the test reports and, if you ask, builds the image without pushing it. **It never runs by itself**: start it with
+
+```powershell
+gh workflow run project-3-ci.yml --ref main
+gh workflow run project-3-ci.yml --ref main -f build-image=true
+```
+
+and switch it off with `gh workflow disable project-3-ci.yml`. Design and reasons: lab 36.
+
+### The keys in this repository
+`app/src/test/resources/privateKey.pem` is a **throw-away** private key that signs the tokens of the tests and of `tools/MintToken.java`; the matching public key is in the jar. They protect nothing: anybody who reads this repository can mint a valid token. A real system verifies with the key (or the JWKS URL) of its identity provider; see `PRODUCTION.md`. The private key is not in the jar (`jar tf` shows only `publicKey.pem`).

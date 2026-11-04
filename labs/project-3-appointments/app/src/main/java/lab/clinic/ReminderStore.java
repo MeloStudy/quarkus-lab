@@ -147,6 +147,7 @@ public class ReminderStore {
                 LOG.warnf("Reminder %d gave up after %d attempts: %s", r.id, r.attempts, error);
             } else {
                 r.nextAttemptAt = clock.instant().plus(config.backoff().multipliedBy(1L << (r.attempts - 1)));
+                LOG.warnf("Reminder %d attempt %d failed (%s); the next try is at %s", r.id, r.attempts, error, r.nextAttemptAt);
             }
         });
     }

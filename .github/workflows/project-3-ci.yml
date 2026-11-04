@@ -1,0 +1,78 @@
+# Project 3 - the pipeline of the clinic appointments service (labs/project-3-appointments/app). The same idea as lab 36's:
+# MANUAL ONLY, it never runs on push or pull request. Start it from the Actions tab or with:
+#   gh workflow run project-3-ci.yml --ref <branch>
+# The tests start a real PostgreSQL with Dev Services, so the runner's Docker is needed (the hosted Ubuntu runners have it).
+name: Project 3 CI (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build-image:
+        description: Also build the container image on the runner (nothing is pushed anywhere)
+        type: boolean
+        default: false
+
+# The token can only read the repository: this job needs nothing else.
+permissions:
+  contents: read
+
+# A second run on the same ref replaces the first one instead of queueing behind it.
+concurrency:
+  group: project-3-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: labs/project-3-appointments/app
+    steps:
+      # Actions are pinned to a commit (the tag is in the comment): a tag can be moved, a commit cannot.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          # Without this line the cache key hashes every pom.xml of the repository (all the labs).
+          cache-dependency-path: labs/project-3-appointments/app/pom.xml
+
+      - name: Build and test
+        run: ./mvnw -B verify
+
+      - name: What the Kubernetes extension generated
+        run: |
+          grep '^kind:' target/kubernetes/kubernetes.yml
+          # the manifest must not need a CRD the cluster may not have, and must carry the migrations as a Job
+          ! grep -q 'kind: ServiceMonitor' target/kubernetes/kubernetes.yml
+          grep -q 'kind: Job' target/kubernetes/kubernetes.yml
+
+      - name: Test report in the run summary
+        if: always()
+        run: |
+          {
+            echo "### Tests"
+            grep -h "Tests run" target/surefire-reports/*.txt | awk '{ run += $3; fail += $5; err += $7 } END { print "run " run ", failures " fail ", errors " err }'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the test reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: surefire-reports
+          path: labs/project-3-appointments/app/target/surefire-reports
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Build the image (not pushed)
+        if: inputs.build-image
+        run: ./mvnw -B package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.push=false
+
+      - name: Show the image
+        if: inputs.build-image
+        run: docker image ls lab/clinic
