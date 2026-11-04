@@ -37,9 +37,13 @@ public class BookingService {
     private final WorkingHoursRepository hours;
     private final ClinicConfig config;
     private final Clock clock;
+    private final Caller caller;
+    private final ReminderStore reminders;
+    private final ClinicMetrics metrics;
 
     BookingService(AppointmentRepository appointments, PractitionerRepository practitioners, PatientRepository patients,
-            TreatmentRepository treatments, WorkingHoursRepository hours, ClinicConfig config, Clock clock) {
+            TreatmentRepository treatments, WorkingHoursRepository hours, ClinicConfig config, Clock clock, Caller caller,
+            ReminderStore reminders, ClinicMetrics metrics) {
         this.appointments = appointments;
         this.practitioners = practitioners;
         this.patients = patients;
@@ -47,10 +51,17 @@ public class BookingService {
         this.hours = hours;
         this.config = config;
         this.clock = clock;
+        this.caller = caller;
+        this.reminders = reminders;
+        this.metrics = metrics;
     }
 
     @Transactional
     public AppointmentView book(BookRequest request) {
+        // who may book for whom comes before everything else, even before "does that patient exist"
+        if (!caller.isReception() && !caller.patientId().filter(id -> id.equals(request.patientId())).isPresent()) {
+            throw ClinicException.forbidden("You can only book appointments for yourself");
+        }
         Practitioner practitioner = practitioners.findByIdOptional(request.practitionerId()).orElseThrow(
                 () -> ClinicException.notFound("Practitioner " + request.practitionerId() + " does not exist"));
         Patient patient = patients.findByIdOptional(request.patientId())
@@ -75,6 +86,8 @@ public class BookingService {
             appointments.persist(a);
             appointments.flush();
         });
+        reminders.schedule(a); // same transaction: the booking and its reminder exist together or not at all
+        metrics.appointment("booked");
         return AppointmentView.of(a, config.timeZone());
     }
 
@@ -83,9 +96,33 @@ public class BookingService {
         return AppointmentView.of(load(id), config.timeZone());
     }
 
+    /** What the caller may list: reception sees what it asks for; a patient or a practitioner only their own. */
+    private AppointmentRepository.Filter restricted(AppointmentRepository.Filter f) {
+        if (caller.isReception()) {
+            return f;
+        }
+        Long patient = f.patientId();
+        Long practitioner = f.practitionerId();
+        if (caller.hasRole(Caller.PATIENT)) {
+            Long own = caller.patientId().orElse(-1L); // a patient token without patient_id sees nothing
+            if (patient != null && !patient.equals(own)) {
+                throw ClinicException.forbidden("You can only list your own appointments");
+            }
+            patient = own;
+        }
+        if (caller.hasRole(Caller.PRACTITIONER)) {
+            Long own = caller.practitionerId().orElse(-1L);
+            if (practitioner != null && !practitioner.equals(own)) {
+                throw ClinicException.forbidden("You can only list your own appointments");
+            }
+            practitioner = own;
+        }
+        return new AppointmentRepository.Filter(practitioner, patient, f.status(), f.from(), f.to());
+    }
+
     @Transactional
     public PageView<AppointmentView> page(AppointmentRepository.Filter filter, int page, int size) {
-        AppointmentRepository.Page result = appointments.page(filter, page, size);
+        AppointmentRepository.Page result = appointments.page(restricted(filter), page, size);
         List<AppointmentView> items = result.items().stream().map(a -> AppointmentView.of(a, config.timeZone())).toList();
         return new PageView<>(items, page, size, result.total());
     }
@@ -105,6 +142,8 @@ public class BookingService {
         a.endsAt = newEnd;
         a.updatedAt = clock.instant();
         translatingOverlaps(appointments::flush);
+        reminders.reschedule(a);
+        metrics.appointment("rescheduled");
         return AppointmentView.of(a, config.timeZone());
     }
 
@@ -112,6 +151,11 @@ public class BookingService {
     @Transactional
     public AppointmentView transition(long id, Long ifMatch, AppointmentStatus to) {
         Appointment a = load(id);
+        boolean mayJudgeTheVisit = caller.isReception()
+                || caller.practitionerId().filter(p -> p.equals(a.practitioner.id)).isPresent();
+        if (to != AppointmentStatus.CANCELLED && !mayJudgeTheVisit) {
+            throw ClinicException.forbidden("Only the practitioner or the reception can record how a visit went");
+        }
         checkVersion(a, ifMatch);
         if (a.status != AppointmentStatus.BOOKED || to == AppointmentStatus.BOOKED) {
             throw ClinicException.conflict("INVALID_TRANSITION", "An appointment cannot go from " + a.status + " to " + to);
@@ -126,11 +170,14 @@ public class BookingService {
         a.status = to;
         a.updatedAt = now;
         translatingOverlaps(appointments::flush);
+        reminders.cancelPending(a);
+        metrics.appointment(to.name().toLowerCase());
         return AppointmentView.of(a, config.timeZone());
     }
 
+    /** An appointment of somebody else is a 404, exactly like one that does not exist: its existence is not revealed (lab 19). */
     private Appointment load(long id) {
-        return appointments.findDetailed(id)
+        return appointments.findDetailed(id).filter(caller::owns)
                 .orElseThrow(() -> ClinicException.notFound("Appointment " + id + " does not exist"));
     }
 

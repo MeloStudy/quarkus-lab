@@ -9,10 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
 
 /** Reschedule, cancel, complete: the state machine, the ETag and the clock. */
 @QuarkusTest
+@TestSecurity(user = "front-desk", roles = "reception")
 class LifecycleTest {
 
     private static final String MONDAY_10 = "2026-03-09T09:00:00Z"; // 10:00 in Madrid

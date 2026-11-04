@@ -16,7 +16,7 @@ Everything is designed around that question: the answer lives in the **database*
 | # | Scope | Status |
 |---|---|---|
 | 1 | **API, persistence, migrations**: practitioners, treatments, patients, working hours, availability, booking, rescheduling, cancelling; Flyway; one error contract; `ETag` / `If-Match`; paging | ✅ built (70 tests) |
-| 2 | **Security, resilience, observability**: JWT roles and ownership, reminders through a fake SMS provider (timeout, retry, circuit breaker), health, metrics, JSON logs, traces | ⬜ |
+| 2 | **Security, resilience, observability**: JWT roles and ownership, reminders through a fake notification provider (timeout, retry, circuit breaker, idempotency key), health, metrics, JSON logs, traces | ✅ built (116 tests) |
 | 3 | **Container, CI, production checklist**: image, Kubernetes manifests, the manual workflow of lab 36, the packaged jar against PostgreSQL, `PRODUCTION.md`, `REVIEW.md` | ⬜ |
 
 ## ▶️ How to run it
@@ -37,7 +37,7 @@ Dev mode (live reload, sample data, Swagger UI at `/q/swagger-ui`):
 ```
 
 ## 🧱 Stack
-Quarkus REST + Jackson, Hibernate ORM with Panache (repositories), Flyway, Hibernate Validator, SmallRye OpenAPI, PostgreSQL 17.11 (Dev Services, pinned). Everything is inside the Quarkus BOM. MapStruct (lab 12) is **deliberately not used**: the responses are records with a static `of(...)`, which is enough for six small shapes and one dependency less.
+Quarkus REST + Jackson, Hibernate ORM with Panache (repositories), Flyway, Hibernate Validator, SmallRye OpenAPI, SmallRye JWT, REST Client, Fault Tolerance, Scheduler, SmallRye Health, Micrometer (Prometheus), JSON logging, OpenTelemetry, PostgreSQL 17.11 (Dev Services, pinned). Everything is inside the Quarkus BOM. MapStruct (lab 12) is **deliberately not used**: the responses are records with a static `of(...)`, which is enough for six small shapes and one dependency less.
 
 ## 📐 Milestone 1 - the specification
 
@@ -116,3 +116,70 @@ Time in the tests is a fixed `Clock` (`Clinic.NOW` is Monday 2026-03-02 09:00 in
 - `ConcurrencyTest` ran **5 times in a row** without a failure.
 - Dev mode starts with the sample data and serves the API and Swagger UI.
 - A mutation experiment showed that the translation of the database's verdict needed **two** things I had not expected (they are in `REVIEW.md` when it is written): the `try` must cover `persist()` and not only `flush()`, and Hibernate's `getConstraintName()` is empty for these violations - the name comes from the PostgreSQL driver.
+
+## 📐 Milestone 2 - security, resilience, observability
+
+### Who may do what
+Tokens are JWTs verified with a public key (issuer `https://clinic.example/issuer`, audience `clinic-api`). The roles are the `groups` claim; a patient token also carries `patient_id` and a practitioner token `practitioner_id` (numbers). **A role without its claim is a token the clinic cannot place: it sees and changes nothing that belongs to somebody.** Every endpoint is annotated and the default is closed (`deny-unannotated-endpoints`).
+
+| | `reception` | `practitioner` | `patient` |
+|---|---|---|---|
+| Read the catalog (practitioners, treatments, working hours) and the availability | yes | yes | yes |
+| Create practitioners, treatments, patients; replace working hours | **yes** | no (403) | no (403) |
+| Read a patient record | any | no (403) | **only their own** (anybody else: 404) |
+| Book | for anybody | no (403) | **only for themselves** (403 for another `patientId`, even one that does not exist) |
+| Read / list appointments | all | **their own** | **their own** |
+| Reschedule | any | no (403) | their own |
+| Cancel | any | their own | their own |
+| Complete or mark no-show | any | **their own** | no (403) |
+| Reminders (`/api/reminders`) | **yes** | no (403) | no (403) |
+
+Somebody else's appointment is a **404**, exactly like one that does not exist: its existence is not revealed. A list asked for somebody else's records (`?patientId=` of another patient) is a 403, not silently filtered. No token, or one that cannot be trusted (bad signature, expired, wrong issuer, wrong audience): 401.
+
+### Reminders
+Booking creates a `reminder` row **in the same transaction** (no outbox to reconcile: both exist or neither). It is due 24 hours before the appointment, or at once if the appointment is closer. Rescheduling makes it pending again for the new time (a new idempotency key, because the key carries the appointment's version); cancelling, completing or missing cancels it unless it already went out.
+
+A job (`@Scheduled`, every 30 s, `SKIP` if the previous tick is still running) does three things, **each in its own transaction, none while calling the provider**:
+1. **Claim**: `UPDATE ... WHERE id IN (SELECT ... FOR UPDATE SKIP LOCKED LIMIT n) RETURNING id` pushes `next_attempt_at` two minutes ahead. Two instances never pick the same row, and a crash only delays a reminder.
+2. **Send** through `ReminderGateway` (REST client + timeout 2 s + retry 2 times + circuit breaker, every policy naming its exceptions).
+3. **Record** the answer, but only if the reminder is still pending *and* the appointment is still at the version that was sent; an answer for a time that moved meanwhile is dropped.
+
+How a failure is classified (the question is "will asking again help?"):
+
+| What happened | Meaning | What the clinic does |
+|---|---|---|
+| 2xx | accepted | `SENT` |
+| 4xx | the provider says *never* (bad address) | `FAILED` at once, no retry, **does not count against the breaker**; a person fixes it and calls `POST /api/reminders/{id}/retry` |
+| 5xx, 429, timeout, connection refused or dropped | *not now* | retried twice at once with the **same idempotency key**; if still failing, one attempt is counted and the next one waits twice as long (1 min, 2, 4, 8); the fifth gives up: `FAILED` |
+| the breaker is open | the provider is known to be down | the rest of the batch is **put off for 30 s without counting an attempt**: it is not the reminder's fault |
+| a lost answer after the provider delivered | looks like a failure, was a success | the retry carries the same key and the provider recognizes it: one message |
+
+### Operations
+- **Management port** (9000; 9001 in tests): `/q/health/live`, `/q/health/ready`, `/q/metrics`. None of them is on the public port.
+- **Readiness stays UP when the reminders are in trouble**, on purpose: booking does not need the provider. The `reminders` check reports `circuit`, `pending`, `failed` and `oldestOverdueSeconds` as data for the operator.
+- **Metrics** (tags are short fixed lists, never ids): `clinic_appointments_total{outcome}`, `clinic_requests_rejected_total{code}` (only 409 and 422), `clinic_reminders_total{result}`, `clinic_notifications_call_seconds{outcome}`, and the gauges `clinic_reminders_pending`, `clinic_reminders_failed` ("a person must look") and `clinic_reminders_overdue_seconds`.
+- **Logs** are JSON in production with the MDC as top-level fields: `reminderId`, `appointmentId`, `trace_id`, `span_id`. No personal data (no emails) in a log line.
+- **Traces**: one `reminder.send` span per reminder; the HTTP call to the provider is its child and the provider receives the trace id (`traceparent`).
+
+### Configuration that matters
+| Property | Meaning | Missing |
+|---|---|---|
+| `mp.jwt.verify.publickey.location`, `mp.jwt.verify.issuer`, `mp.jwt.verify.audiences` | how tokens are verified | the defaults in `application.properties` point at the public key inside the jar |
+| `quarkus.rest-client.notifications.url`, `notifications.api-key` | the provider | **no default for the key: the application refuses to start** (validated `@ConfigMapping`) |
+| `clinic.reminders.*` | lead time, batch size, attempts, backoff, lease, pause when the provider is down, poll interval | defaults in `ReminderConfig` |
+| `clinic.time-zone`, `clinic.slot-minutes`, `clinic.horizon-days` | the clinic | defaults, zone validated at startup |
+
+### What the new tests prove (116 in all)
+| Class | What it protects |
+|---|---|
+| `SecurityTest` (15, real tokens, no `@TestSecurity`) | 401 for each way a token can be untrustworthy, a closed default, each role rule with its allowed twin, somebody else's appointment is a 404 identical to a missing one, lists scoped to the caller, a token with a role and no record claim sees nothing |
+| `ReminderTest` (10) | created with the booking, due 24 h before or at once, sent exactly once, cancelled/moved/stale answers |
+| `ReminderResilienceTest` (7) | temporary failure retried **with the same key and delivered once**; a lost answer delivers **once**; a 400 is not retried and does not open the breaker; an outage opens the breaker and puts the rest of the batch off without counting attempts; recovery delivers everybody once; **four simultaneous runs pick each reminder exactly once** - all counted at the fake provider |
+| `ReminderExhaustionTest` | the wait doubles (60, 120, 240, 480 s) and the fifth failure gives up |
+| `ReminderSchedulerTest` | nobody calls the job: the scheduler sends it |
+| `HealthTest`, `MetricsTest`, `TracingAndLogsTest` | readiness stays UP with the provider down; counters, gauges and tags; one trace per reminder, the provider receives its id, the log line carries the same ids and no email |
+
+## ✅ Verified during milestone 2
+- `SecurityTest` and `ReminderResilienceTest` ran **5 times in a row** without a failure; the operations classes 3 times.
+- The fake provider is idempotent like a real one, so "how many messages went out" is read **at the provider**, not from the application's own report.
+- One finding that goes into `REVIEW.md`: the Quarkus OpenTelemetry integration owns the MDC keys `traceId` and `spanId` and they never reached the log line written by the reminder job (measured: the same code with `trace_id` and `span_id` did), so the job sets its own keys.

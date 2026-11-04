@@ -12,10 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
 
 /** Filters, paging and the number of SQL statements of a page. */
 @QuarkusTest
+@TestSecurity(user = "front-desk", roles = "reception")
 class ListingTest {
 
     @Inject

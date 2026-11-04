@@ -11,6 +11,7 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
+import jakarta.inject.Inject;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -26,8 +27,14 @@ public class ErrorMappers {
 
     private static final Logger LOG = Logger.getLogger(ErrorMappers.class);
 
+    @Inject
+    ClinicMetrics metrics;
+
     @ServerExceptionMapper
     public RestResponse<ApiError> domain(ClinicException e) {
+        if (e.status() == 409 || e.status() == 422) {
+            metrics.rejected(e.code()); // the codes are a short fixed list: safe as a tag
+        }
         return json(e.status(), ApiError.of(e.code(), e.getMessage()));
     }
 

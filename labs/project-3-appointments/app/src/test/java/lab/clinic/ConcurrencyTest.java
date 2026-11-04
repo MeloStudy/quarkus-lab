@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
 
 /**
@@ -20,6 +21,7 @@ import jakarta.inject.Inject;
  * instant. There is no lock and no "check first" in the code, so the only judge is the exclusion constraint.
  */
 @QuarkusTest
+@TestSecurity(user = "front-desk", roles = "reception")
 class ConcurrencyTest {
 
     private static final int CLIENTS = 12;

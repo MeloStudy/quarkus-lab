@@ -12,11 +12,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 
 /** Every failure, expected or not, leaves the API in the same shape, and says nothing about the inside. */
 @QuarkusTest
+@TestSecurity(user = "front-desk", roles = "reception")
 class ErrorContractTest {
 
     @Inject

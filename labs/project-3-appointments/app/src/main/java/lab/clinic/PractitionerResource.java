@@ -6,6 +6,7 @@ import java.util.List;
 import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -38,30 +39,35 @@ public class PractitionerResource {
     }
 
     @POST
+    @RolesAllowed(Caller.RECEPTION)
     public Response create(@Valid @NotNull PractitionerRequest request) {
         PractitionerView created = catalog.createPractitioner(request);
         return Response.created(URI.create("/api/practitioners/" + created.id())).entity(created).build();
     }
 
     @GET
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public List<PractitionerView> list() {
         return catalog.practitioners();
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public PractitionerView get(@RestPath long id) {
         return catalog.practitioner(id);
     }
 
     @GET
     @Path("/{id}/working-hours")
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public List<HoursView> hours(@RestPath long id) {
         return catalog.workingHours(id);
     }
 
     @PUT
     @Path("/{id}/working-hours")
+    @RolesAllowed(Caller.RECEPTION)
     public List<HoursView> replaceHours(@RestPath long id, @Valid @NotNull WorkingHoursRequest request) {
         return catalog.replaceWorkingHours(id, request.blocks());
     }
@@ -72,6 +78,7 @@ public class PractitionerResource {
      */
     @GET
     @Path("/{id}/availability")
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public AvailabilityView availability(@RestPath long id,
             @RestQuery @NotNull @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}") String date,
             @RestQuery @NotNull @Pattern(regexp = "[0-9]{1,18}") String treatmentId) {

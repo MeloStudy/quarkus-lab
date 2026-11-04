@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
 
 /**
@@ -16,6 +17,7 @@ import jakarta.inject.Inject;
  * 15:00-18:00 on weekdays. Every refusal test first books something valid, so none passes for the wrong reason.
  */
 @QuarkusTest
+@TestSecurity(user = "front-desk", roles = "reception")
 class BookingTest {
 
     private static final String MONDAY_10 = "2026-03-09T09:00:00Z"; // 10:00 in Madrid

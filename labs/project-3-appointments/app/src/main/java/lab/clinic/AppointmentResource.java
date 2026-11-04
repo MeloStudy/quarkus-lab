@@ -8,6 +8,7 @@ import org.jboss.resteasy.reactive.RestHeader;
 import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -45,6 +46,7 @@ public class AppointmentResource {
     }
 
     @POST
+    @RolesAllowed({ Caller.RECEPTION, Caller.PATIENT })
     public Response book(@Valid @NotNull BookRequest request) {
         AppointmentView created = booking.book(request);
         return Response.created(URI.create("/api/appointments/" + created.id())).tag(tagOf(created)).entity(created).build();
@@ -52,6 +54,7 @@ public class AppointmentResource {
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public Response get(@RestPath long id) {
         AppointmentView a = booking.get(id);
         return Response.ok(a).tag(tagOf(a)).build();
@@ -62,6 +65,7 @@ public class AppointmentResource {
      * conversion. {@code from} and {@code to} are days of the clinic, both included.
      */
     @GET
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public PageView<AppointmentView> list(
             @RestQuery @Pattern(regexp = "[0-9]{1,18}") String practitionerId,
             @RestQuery @Pattern(regexp = "[0-9]{1,18}") String patientId,
@@ -81,6 +85,7 @@ public class AppointmentResource {
 
     @POST
     @Path("/{id}/reschedule")
+    @RolesAllowed({ Caller.RECEPTION, Caller.PATIENT })
     public Response reschedule(@RestPath long id, @RestHeader("If-Match") String ifMatch,
             @Valid @NotNull RescheduleRequest request) {
         AppointmentView a = booking.reschedule(id, versionOf(ifMatch), request.startsAt());
@@ -89,6 +94,7 @@ public class AppointmentResource {
 
     @POST
     @Path("/{id}/status")
+    @RolesAllowed({ Caller.RECEPTION, Caller.PRACTITIONER, Caller.PATIENT })
     public Response transition(@RestPath long id, @RestHeader("If-Match") String ifMatch,
             @Valid @NotNull TransitionRequest request) {
         AppointmentView a = booking.transition(id, versionOf(ifMatch), request.to());

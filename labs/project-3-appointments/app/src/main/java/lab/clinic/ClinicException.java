@@ -27,6 +27,11 @@ public class ClinicException extends RuntimeException {
         return new ClinicException(404, "NOT_FOUND", message);
     }
 
+    /** The caller is known but may not do this (a patient completing an appointment, booking for somebody else...). */
+    public static ClinicException forbidden(String message) {
+        return new ClinicException(403, "FORBIDDEN", message);
+    }
+
     /** The value of a parameter is not usable (an impossible date...). */
     public static ClinicException badRequest(String code, String message) {
         return new ClinicException(400, code, message);
