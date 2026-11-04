@@ -1,0 +1,70 @@
+# Lab 36 - a small CI pipeline for one Quarkus project (labs/lab-36-ci/demo).
+# MANUAL ONLY: it never runs on push or pull request. Start it from the Actions tab or with:
+#   gh workflow run lab-36-ci.yml --ref <branch>
+name: Lab 36 CI (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build-image:
+        description: Also build the container image on the runner (nothing is pushed anywhere)
+        type: boolean
+        default: false
+
+# The token can only read the repository: this job needs nothing else.
+permissions:
+  contents: read
+
+# A second run on the same ref replaces the first one instead of queueing behind it.
+concurrency:
+  group: lab-36-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: labs/lab-36-ci/demo
+    steps:
+      # Actions are pinned to a commit (the tag is in the comment): a tag can be moved, a commit cannot.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          # Without this line the cache key hashes every pom.xml of the repository (all the labs).
+          cache-dependency-path: labs/lab-36-ci/demo/pom.xml
+
+      - name: Build and test
+        run: ./mvnw -B -ntp verify
+
+      - name: Test report in the run summary
+        if: always()
+        run: |
+          {
+            echo "### Tests"
+            grep -h "Tests run" target/surefire-reports/*.txt || echo "no reports"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the test reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: surefire-reports
+          path: labs/lab-36-ci/demo/target/surefire-reports
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Build the image (not pushed)
+        if: inputs.build-image
+        run: ./mvnw -B -ntp package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.push=false
+
+      - name: Show the image
+        if: inputs.build-image
+        run: docker image ls lab/ci-demo
