@@ -391,5 +391,7 @@ gh workflow run project-3-ci.yml --ref main -f build-image=true
 
 and switch it off with `gh workflow disable project-3-ci.yml`. Design and reasons: lab 36.
 
+Verified: a run on GitHub (cold cache, `build-image=true`) passed in **3 min 19 s**: `Tests run: 117, Failures: 0, Errors: 0`, the manifest check listed `ServiceAccount, Role, RoleBinding, Service, Deployment, Job`, the image `lab/clinic:1.0` was built (455 MB) and the test reports were uploaded (about 240 kB).
+
 ### The keys in this repository
 `app/src/test/resources/privateKey.pem` is a **throw-away** private key that signs the tokens of the tests and of `tools/MintToken.java`; the matching public key is in the jar. They protect nothing: anybody who reads this repository can mint a valid token. A real system verifies with the key (or the JWKS URL) of its identity provider; see `PRODUCTION.md`. The private key is not in the jar (`jar tf` shows only `publicKey.pem`).
